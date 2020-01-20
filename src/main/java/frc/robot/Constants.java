@@ -15,6 +15,8 @@ public class Constants {
      * CANBUS Ports
      */
     static final int[] kShooterPorts = { 0, 1 };
+    static final int kShooterForwardPort = 2;
+    static final int kShooterReversePort = 3;
     static final int[] kDriveLeftPorts = { 3, 4, 5 };
     static final int[] kDriveRightPorts = { 9, 10, 11 };
 

@@ -41,8 +41,9 @@ public class Robot extends TimedRobot {
     auto = new AutoOptions(Constants.kStartingLocations, Constants.kValidColors);
 
     // Shooter Initialization
-    shooter = new Shooter(Constants.kShooterPorts, Constants.kSparkMaxCurrent, Constants.kShooterRPM,
-        Constants.kShooterThreshold, Constants.kShooterMaxOutput, operatorController);
+    shooter = new Shooter(Constants.kShooterPorts, Constants.kShooterForwardPort, Constants.kShooterReversePort,
+        Constants.kSparkMaxCurrent, Constants.kShooterRPM, Constants.kShooterThreshold, Constants.kShooterMaxOutput,
+        operatorController);
 
     // Get Shooter Controller
     SendableChooser<String> shooterSelector = new SendableChooser<>();
@@ -61,7 +62,7 @@ public class Robot extends TimedRobot {
 
     drive = new DriveTrain(Constants.kDriveLeftPorts, Constants.kDriveRightPorts, Constants.kSparkMaxCurrent,
         Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, driveController);
-    
+
     drive.enableKinematics(Constants.kTrackWidth, Constants.kWheelRadius, auto.getStartingLocation());
     drive.enableFollowTrajectory(Constants.kDriveB, Constants.kDriveZeta);
     drive.enableDriveController(Constants.kShooterMaxOutput, Constants.kPDrive, Constants.kIDrive, Constants.kDDrive);
