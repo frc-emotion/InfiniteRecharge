@@ -21,7 +21,8 @@ public class Constants {
     /**
      * Robot Constants
      */
-    static final double kTrackWidth = 0.2; // in meters
+    static final double kTrackWidth = 0.2;
+    static final double kWheelRadius = 0.2;
 
     /**
      * Motor Defaults
@@ -42,14 +43,14 @@ public class Constants {
     static final String kPID = "PID";
 
     /**
-     * Two Step Constants
+     * Shooter Two Step Constants
      */
     static final double kShooterMinOutput = 0.3;
 
     /**
      * Shooter PID Constants
      */
-    static final float kPShooter = 1 / 300;
+    static final float kPShooter = 1;
     static final float kIShooter = 0;
     static final float kDShooter = 0;
 
@@ -61,8 +62,21 @@ public class Constants {
     static final double kTurboPower = 0.99;
 
     /**
-     * Pose2d Constants
-     * All Pose2d should be relative to one Pose2d (Currently center of the field)
+     * DriveTrain Ramsete Constants
+     */
+    static final double kDriveB = 2.0;
+    static final double kDriveZeta = 0.7;
+
+    /**
+     * DriveTrain PID Constants
+     */
+    static final double kPDrive = 1;
+    static final double kIDrive = 0;
+    static final double kDDrive = 0;
+
+    /**
+     * Pose2d Constants All Pose2d should be relative to one Pose2d (Currently
+     * center of the field)
      */
     static final ArrayList<ArrayList<Pose2d>> kStartingLocations = new ArrayList<ArrayList<Pose2d>>() {
         {

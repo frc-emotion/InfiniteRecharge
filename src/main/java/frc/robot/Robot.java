@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import frc.robot.drivetrain.*;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -59,7 +61,10 @@ public class Robot extends TimedRobot {
 
     drive = new DriveTrain(Constants.kDriveLeftPorts, Constants.kDriveRightPorts, Constants.kSparkMaxCurrent,
         Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, driveController);
-    drive.initializeKinematics(Constants.kTrackWidth, auto.getStartingLocation());
+    
+    drive.enableKinematics(Constants.kTrackWidth, Constants.kWheelRadius, auto.getStartingLocation());
+    drive.enableFollowTrajectory(Constants.kDriveB, Constants.kDriveZeta);
+    drive.enableDriveController(Constants.kShooterMaxOutput, Constants.kPDrive, Constants.kIDrive, Constants.kDDrive);
   }
 
   /**

@@ -3,7 +3,9 @@ package frc.robot;
 import java.util.ArrayList;
 
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -49,13 +51,12 @@ class Shooter {
     private SpeedControllerGroup shooterGroup; // Groups sparkA and sparkB to the same set function
     private CANEncoder sparkEncoder; // sparkA's builtin encoder
 
-    private double targetRPM, currentRPM, threshold; // Generic constants
+    private double targetRPM, currentRPM, threshold; // Generic controller constants
     private boolean twoStepController, pidController; // Booleans that determine what control function will be called
 
     private double minOutput, maxOutput; // Lower limit and upper limit of the 2 Step Controller
 
-    private float kP, kI, kD; // Constants for PID Controller
-    private PIDControl shooterPIDControl; // PID Controller
+    private float kI, kD; // Constants for PID Controller
 
     private double output; // Variable for spinUp
     private boolean inRange; // Flag for whether the the targetRPM is reached
@@ -100,7 +101,7 @@ class Shooter {
         twoStepController = pidController = false;
         currentRPM = 0;
         minOutput = 0;
-        kP = kI = kD = 0;
+        kI = kD = 0;
     }
 
     /**
@@ -162,11 +163,16 @@ class Shooter {
      * @param kP constant for P
      */
     public void enablePIDController(float kP) {
-        this.kP = kP;
-        shooterPIDControl = new PIDControl(kP, kI, kD);
-        shooterPIDControl.setMaxSpeed(maxOutput);
-        shooterPIDControl.setTolerance(threshold);
+        CANPIDController sparkPIDController = sparkA.getPIDController();
+        
+        sparkPIDController.setP(kP);
+        sparkPIDController.setI(kI);
+        sparkPIDController.setD(kD);
 
+        sparkPIDController.setOutputRange(-maxOutput, maxOutput);
+        sparkPIDController.setFeedbackDevice(sparkEncoder);
+
+        sparkPIDController.setReference(targetRPM, ControlType.kVelocity);
     }
 
     /**
@@ -199,6 +205,10 @@ class Shooter {
         pidController = false;
     }
 
+    private boolean atTargetRPM() {
+        return Math.abs(targetRPM - currentRPM) < threshold;
+    }
+
     /**
      * Function that should be called by teleopPeriodic
      */
@@ -211,6 +221,7 @@ class Shooter {
         } else {
             spinDown();
         }
+        
         dashboardRun();
     }
 
@@ -219,10 +230,10 @@ class Shooter {
      * autonomous in order to insure continually updates to SmartDashboard.
      */
     public void update() {
-        currentRPM = sparkEncoder.getVelocity() * sparkEncoder.getVelocityConversionFactor();
+        currentRPM = sparkEncoder.getVelocity();
         output = 0;
-        inRange = false;
         activated = false;
+        inRange = atTargetRPM();
     }
 
     /**
@@ -231,7 +242,7 @@ class Shooter {
      * SmartDashboard.
      */
     public void dashboardRun() {
-        SmartDashboard.putNumber("ShooterAngularVelocity", currentRPM * 6);
+        SmartDashboard.putNumber("ShooterRPM", currentRPM);
         SmartDashboard.putNumber("ShooterOutput", output);
         SmartDashboard.putBoolean("ShooterVelocityInRange", inRange);
         SmartDashboard.putBoolean("ShooterActivated", activated);
@@ -244,12 +255,8 @@ class Shooter {
         setCoastMode();
         if (pidController) {
             output = runPIDController();
-            inRange = shooterPIDControl.isInRange();
         } else if (twoStepController) {
             output = runTwoStepController();
-            if (output == minOutput) {
-                inRange = true;
-            }
         }
 
         shooterGroup.set(output);
@@ -269,7 +276,8 @@ class Shooter {
      * @return output double value that shooterGroup will be set to
      */
     private double runPIDController() {
-        return shooterPIDControl.getValue(targetRPM, currentRPM);
+        sparkA.pidWrite(targetRPM);
+        return sparkA.get();
     }
 
     /**
@@ -283,7 +291,7 @@ class Shooter {
         if (targetRPM - currentRPM < 0) {
             return minOutput;
         }
-        if (Math.abs(targetRPM - currentRPM) < threshold) {
+        if (inRange) {
             return minOutput;
         }
         return maxOutput;

@@ -7,12 +7,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 
 class AutoOptions {
-    private ArrayList<ArrayList<Pose2d>> startingLocations; // [Alliance 0 = Blue, 1 = Red][Location on respective side]
     private ArrayList<Character> validColors; // List of valid color values
     private Pose2d currentStartingLocation; // Specific starting location for this match
 
     AutoOptions(ArrayList<ArrayList<Pose2d>> startingLocations, ArrayList<Character> validColors) {
-        this.startingLocations = startingLocations;
         this.validColors = validColors;
 
         // Determine starting location from FMS
