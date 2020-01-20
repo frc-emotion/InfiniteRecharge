@@ -9,12 +9,12 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // ? Add feedbackPIDController if necessary
-// TODO Figure out what allows the balls to enter the shooting chamber and create a shoot function
 /**
  * Class that runs the Shooting Mechanism
  * 
@@ -51,6 +51,8 @@ class Shooter {
     private SpeedControllerGroup shooterGroup; // Groups sparkA and sparkB to the same set function
     private CANEncoder sparkEncoder; // sparkA's builtin encoder
 
+    private DoubleSolenoid hook;
+
     private double targetRPM, currentRPM, threshold; // Generic controller constants
     private boolean twoStepController, pidController; // Booleans that determine what control function will be called
 
@@ -63,8 +65,8 @@ class Shooter {
 
     private boolean activated; // Flag ofr whether spinUp was triggered this cycle
 
-    public Shooter(int[] ports, int maxCurrent, double targetRPM, double threshold, double maxOutput,
-            XboxController shooterController) {
+    public Shooter(int[] ports, int forwardChannel, int reverseChannel, int maxCurrent, double targetRPM,
+            double threshold, double maxOutput, XboxController shooterController) {
         // Ports should be length 2
         if (ports.length != 2) {
             return;
@@ -89,6 +91,8 @@ class Shooter {
 
         sparkEncoder = sparkA.getEncoder();
         shooterGroup = new SpeedControllerGroup(sparkA, sparkB);
+
+        hook = new DoubleSolenoid(forwardChannel, reverseChannel);
 
         // Store variables
         this.shooterController = shooterController;
@@ -164,7 +168,7 @@ class Shooter {
      */
     public void enablePIDController(float kP) {
         CANPIDController sparkPIDController = sparkA.getPIDController();
-        
+
         sparkPIDController.setP(kP);
         sparkPIDController.setI(kI);
         sparkPIDController.setD(kD);
@@ -216,12 +220,12 @@ class Shooter {
         update();
         // A Button should be held to activate
         if (shooterController.getAButton()) {
-            spinUp(); // spinUp should be self contained as it can be called during autonomous
+            shoot();
             activated = true;
         } else {
             spinDown();
         }
-        
+
         dashboardRun();
     }
 
@@ -246,6 +250,18 @@ class Shooter {
         SmartDashboard.putNumber("ShooterOutput", output);
         SmartDashboard.putBoolean("ShooterVelocityInRange", inRange);
         SmartDashboard.putBoolean("ShooterActivated", activated);
+    }
+
+    /**
+     * Calls spinUp and releases the ball once the targetRPM is reached
+     */
+    public void shoot() {
+        spinUp();
+        if (atTargetRPM()) {
+            hook.set(DoubleSolenoid.Value.kForward);
+        }
+
+        hook.set(DoubleSolenoid.Value.kReverse);
     }
 
     /**
