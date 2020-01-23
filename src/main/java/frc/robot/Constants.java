@@ -2,14 +2,20 @@ package frc.robot;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 
 public class Constants {
     /**
-     * USB Ports
+     * Controller Ports
      */
     static final int kDrivePort = 0;
     static final int kOperatorPort = 1;
+
+    /**
+     * USB Ports
+     */
+    static final Port kGyroPort = Port.kUSB;
 
     /**
      * CANBUS Ports
@@ -23,8 +29,10 @@ public class Constants {
     /**
      * Robot Constants
      */
-    static final double kTrackWidth = 0.2;
-    static final double kWheelRadius = 0.2;
+    static final double kTrackWidth = 0.6898513;
+    static final double kWheelRadius = 0.15242;
+    static final double kMaxVelocity = 2;
+    static final double kMaxAcceleration = 0.5;
 
     /**
      * Motor Defaults
@@ -36,7 +44,7 @@ public class Constants {
      */
     static final double kShooterRPM = 300;
     static final double kShooterThreshold = 30;
-    static final double kShooterMaxOutput = 0.5;
+    static final double kShooterMaxOutput = 0.7;
 
     /**
      * Shooter Choosable Controller Constants
@@ -47,7 +55,7 @@ public class Constants {
     /**
      * Shooter Two Step Constants
      */
-    static final double kShooterMinOutput = 0.3;
+    static final double kShooterMinOutput = 0;
 
     /**
      * Shooter PID Constants

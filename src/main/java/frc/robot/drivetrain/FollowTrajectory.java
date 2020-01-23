@@ -130,6 +130,10 @@ public class FollowTrajectory {
         }
         long currentTime = (System.currentTimeMillis() - startingTime) * 1000;
 
+        if (isInRange()) {
+            return null;
+        }
+
         Trajectory.State targetPose = trajectory.sample(currentTime);
         ChassisSpeeds adjustedSpeeds = trajectoryController.calculate(currentPose, targetPose);
         return driveKinematics.toWheelSpeeds(adjustedSpeeds);

@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -106,8 +107,8 @@ public class DriveTrain {
      *                     https://github.com/wpilibsuite/frc-characterization
      * @param startingPose cuurent Pose2d relative to the center of the field
      */
-    public void enableKinematics(double trackWidth, double wheelRadius, Pose2d startingPose) {
-        kinematics = new Kinematics(wheelRadius, lsparkA.getEncoder(), rsparkA.getEncoder(), trackWidth, startingPose);
+    public void enableKinematics(double trackWidth, double wheelRadius, Port gyroPort, Pose2d startingPose) {
+        kinematics = new Kinematics(gyroPort, wheelRadius, lsparkA.getEncoder(), rsparkA.getEncoder(), trackWidth, startingPose);
     }
 
     /**
@@ -223,7 +224,7 @@ public class DriveTrain {
         }
 
         DifferentialDriveWheelSpeeds wheelSpeed = followTrajectory.followTrajectory(kinematics.getPose());
-        // wheelSpeed is null if trajectory is not intialized correctly
+        // wheelSpeed is null if trajectory is not intialized correctly or already in rang
         if (wheelSpeed.equals(null)) {
             return;
         }

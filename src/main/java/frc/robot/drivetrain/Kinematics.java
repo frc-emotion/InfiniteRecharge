@@ -42,11 +42,11 @@ class Kinematics {
         this.wheelRadius = wheelRadius;
     }
 
-    Kinematics(double wheelRadius, CANEncoder lEncoder, CANEncoder rEncoder, double trackWidth, Pose2d startingPose) {
+    Kinematics(Port gyroPort, double wheelRadius, CANEncoder lEncoder, CANEncoder rEncoder, double trackWidth, Pose2d startingPose) {
         this.lEncoder = lEncoder;
         this.rEncoder = rEncoder;
 
-        gyro = new AHRS(Port.kUSB);
+        gyro = new AHRS(gyroPort);
 
         reset(trackWidth, startingPose);
 
