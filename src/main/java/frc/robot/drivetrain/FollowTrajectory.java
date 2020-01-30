@@ -29,7 +29,7 @@ public class FollowTrajectory {
 
     private Trajectory trajectory; // Current trajectory to follow
     private long startingTime; // Time followTrajectory was first called for this trajectory
-    private boolean inProgress; // Flag whether a followTrajectory is in progress
+    private boolean loaded, inProgress; // Flag whether a trajectory is in progress or loaded
 
     FollowTrajectory(DifferentialDriveKinematics driveKinematics) {
         this.driveKinematics = driveKinematics;
@@ -70,7 +70,7 @@ public class FollowTrajectory {
      * @return
      */
     public double getTime() {
-        if (trajectory.equals(null)) {
+        if (!loaded) {
             return 0;
         }
 
@@ -102,6 +102,7 @@ public class FollowTrajectory {
     public void setTrajectory(Trajectory trajectory) {
         resetTrajectory();
         this.trajectory = trajectory;
+        loaded = true;
     }
 
     /**
@@ -109,7 +110,7 @@ public class FollowTrajectory {
      */
     public void resetTrajectory() {
         inProgress = false;
-        trajectory = null;
+        loaded = false;
     }
 
     /**
@@ -120,7 +121,7 @@ public class FollowTrajectory {
      * @return
      */
     public DifferentialDriveWheelSpeeds followTrajectory(Pose2d currentPose) {
-        if (ramseteController || trajectory.equals(null)) {
+        if (!ramseteController || !loaded) {
             return null;
         }
 
@@ -143,12 +144,7 @@ public class FollowTrajectory {
      * Call periodically to update variables and SmartDashboard
      */
     public void run() {
-        double trajectoryTime = 0;
-        if (!trajectory.equals(null)) {
-            trajectoryTime = trajectory.getTotalTimeSeconds();
-        }
-
-        SmartDashboard.putNumber("TrajectoryTime", trajectoryTime);
+        SmartDashboard.putNumber("TrajectoryTime", getTime());
         SmartDashboard.putBoolean("TrajectoryInProgress", inProgress);
     }
 }

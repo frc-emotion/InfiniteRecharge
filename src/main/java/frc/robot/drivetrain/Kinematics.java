@@ -7,6 +7,7 @@ import com.revrobotics.CANEncoder;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
@@ -42,7 +43,8 @@ class Kinematics {
         this.wheelRadius = wheelRadius;
     }
 
-    Kinematics(Port gyroPort, double wheelRadius, CANEncoder lEncoder, CANEncoder rEncoder, double trackWidth, Pose2d startingPose) {
+    Kinematics(Port gyroPort, double wheelRadius, CANEncoder lEncoder, CANEncoder rEncoder, double trackWidth,
+            Pose2d startingPose) {
         this.lEncoder = lEncoder;
         this.rEncoder = rEncoder;
 
@@ -73,8 +75,9 @@ class Kinematics {
     private void resetSensors() {
         lEncoder.setPosition(0);
         rEncoder.setPosition(0);
-
-        gyro.reset();
+        if (!gyro.isCalibrating()) {
+            gyro.reset();
+        }
     }
 
     /**
@@ -171,7 +174,16 @@ class Kinematics {
         SmartDashboard.putNumber("DriveTrainAngularVelocity", currentSpeed.omegaRadiansPerSecond);
         SmartDashboard.putNumber("DriveTrainLeftWheelSpeed",
                 driveKinematics.toWheelSpeeds(currentSpeed).leftMetersPerSecond);
-        SmartDashboard.putNumber("DriveTrainLeftWheelSpeed",
+        SmartDashboard.putNumber("DriveTrainRightWheelSpeed",
                 driveKinematics.toWheelSpeeds(currentSpeed).rightMetersPerSecond);
+
+        Translation2d currentTranslation = currentPose.getTranslation();
+
+        SmartDashboard.putNumber("DriveTrainX", currentTranslation.getX());
+        SmartDashboard.putNumber("DriveTrainY", currentTranslation.getY());
+
+        Rotation2d currentRotation = currentPose.getRotation();
+
+        SmartDashboard.putNumber("DriveOrientation", currentRotation.getDegrees());
     }
 }

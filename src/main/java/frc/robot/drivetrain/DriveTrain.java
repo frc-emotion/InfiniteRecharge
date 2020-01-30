@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,6 +54,9 @@ public class DriveTrain {
 
     private FollowTrajectory followTrajectory; // Trajectory generation and returns speeds to follow course
     private double trajectoryTime; // Time to finish trajectory
+
+    private double trackWidth; // Track width
+    private Pose2d startingPose;
 
     public DriveTrain(int[] leftPorts, int[] rightPorts, int maxCurrent, double slowPower, double regularPower,
             double turboPower, XboxController driveController) {
@@ -108,7 +112,11 @@ public class DriveTrain {
      * @param startingPose cuurent Pose2d relative to the center of the field
      */
     public void enableKinematics(double trackWidth, double wheelRadius, Port gyroPort, Pose2d startingPose) {
-        kinematics = new Kinematics(gyroPort, wheelRadius, lsparkA.getEncoder(), rsparkA.getEncoder(), trackWidth, startingPose);
+        kinematics = new Kinematics(gyroPort, wheelRadius, lsparkA.getEncoder(), rsparkA.getEncoder(), trackWidth,
+                startingPose);
+
+        this.startingPose = startingPose;
+        this.trackWidth = trackWidth;
     }
 
     /**
@@ -167,7 +175,7 @@ public class DriveTrain {
         kinematics.run();
 
         if (driveController.getAButton()) {
-            return;
+            kinematics.reset(trackWidth, startingPose);
         } else {
             interruptTrajectory();
             runTankDrive();
@@ -224,7 +232,8 @@ public class DriveTrain {
         }
 
         DifferentialDriveWheelSpeeds wheelSpeed = followTrajectory.followTrajectory(kinematics.getPose());
-        // wheelSpeed is null if trajectory is not intialized correctly or already in rang
+        // wheelSpeed is null if trajectory is not intialized correctly or already in
+        // rang
         if (wheelSpeed.equals(null)) {
             return;
         }

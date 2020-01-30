@@ -42,7 +42,8 @@ public class Robot extends TimedRobot {
 
     auto = new AutoOptions(Constants.kStartingLocations, Constants.kValidColors);
     
-    // Shooter Initialization
+    /**
+     * // Shooter Initialization
     shooter = new Shooter(Constants.kShooterPorts, Constants.kShooterForwardPort, Constants.kShooterReversePort,
         Constants.kSparkMaxCurrent, Constants.kShooterRPM, Constants.kShooterThreshold, Constants.kShooterMaxOutput,
         operatorController);
@@ -61,6 +62,8 @@ public class Robot extends TimedRobot {
     }
 
     shooterSelector.close();
+     */
+    
 
     drive = new DriveTrain(Constants.kDriveLeftPorts, Constants.kDriveRightPorts, Constants.kSparkMaxCurrent,
         Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, driveController);
@@ -119,7 +122,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    shooter.run();
+    //shooter.run();
     drive.run();
   }
 

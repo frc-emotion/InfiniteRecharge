@@ -29,10 +29,13 @@ public class Constants {
     /**
      * Robot Constants
      */
+
+    // Flipper Constants
+
     static final double kTrackWidth = 0.6898513;
     static final double kWheelRadius = 0.15242;
     static final double kMaxVelocity = 2;
-    static final double kMaxAcceleration = 0.5;
+    static final double kMaxAcceleration = 0.5; // Not verified
 
     /**
      * Motor Defaults
