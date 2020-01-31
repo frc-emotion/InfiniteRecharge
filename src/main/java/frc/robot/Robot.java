@@ -7,12 +7,10 @@
 
 package frc.robot;
 
-import frc.robot.drivetrain.*;
+import frc.robot.intake.*;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -42,10 +40,9 @@ public class Robot extends TimedRobot {
 
     auto = new AutoOptions(Constants.kStartingLocations, Constants.kValidColors);
     
-    /**
-     * // Shooter Initialization
+    // Shooter Initialization
     shooter = new Shooter(Constants.kShooterPorts, Constants.kShooterForwardPort, Constants.kShooterReversePort,
-        Constants.kSparkMaxCurrent, Constants.kShooterRPM, Constants.kShooterThreshold, Constants.kShooterMaxOutput,
+        Constants.kSparkMaxCurrent, Constants.kShooterRPM, Constants.kShooterWaitTime, Constants.kShooterThresholdRPM, Constants.kShooterThresholdTrigger, Constants.kShooterMaxOutput,
         operatorController);
 
     // Get Shooter Controller
@@ -62,15 +59,10 @@ public class Robot extends TimedRobot {
     }
 
     shooterSelector.close();
-     */
     
 
     drive = new DriveTrain(Constants.kDriveLeftPorts, Constants.kDriveRightPorts, Constants.kSparkMaxCurrent,
         Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, driveController);
-
-    drive.enableKinematics(Constants.kTrackWidth, Constants.kWheelRadius, Constants.kGyroPort, auto.getStartingLocation());
-    drive.enableFollowTrajectory(Constants.kDriveB, Constants.kDriveZeta);
-    drive.enableDriveController(Constants.kShooterMaxOutput, Constants.kPDrive, Constants.kIDrive, Constants.kDDrive);
   }
 
   /**
@@ -109,9 +101,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     shooter.update();
-    drive.update();
-
-    drive.goToPose(new Pose2d(0, 1, new Rotation2d()), Constants.kMaxVelocity, Constants.kMaxAcceleration);
 
     shooter.dashboardRun();
     drive.dashboardRun();

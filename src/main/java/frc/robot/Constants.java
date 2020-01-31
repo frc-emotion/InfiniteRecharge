@@ -46,8 +46,10 @@ public class Constants {
      * Shooter General Constants
      */
     static final double kShooterRPM = 300;
-    static final double kShooterThreshold = 30;
+    static final double kShooterThresholdRPM = 30;
+    static final double kShooterThresholdTrigger = 0.3;
     static final double kShooterMaxOutput = 0.7;
+    static final double kShooterWaitTime = 500;
 
     /**
      * Shooter Choosable Controller Constants

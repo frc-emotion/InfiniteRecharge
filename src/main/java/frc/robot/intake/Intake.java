@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.intake;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 class Intake {
     private XboxController operatorController;
@@ -15,8 +16,9 @@ class Intake {
     private SpeedControllerGroup intakeGroup;
 
     private double maxOutput;
+    private double threshold;
 
-    Intake(int[] ports, int maxCurrent, double maxOutput, XboxController operatorController) {
+    Intake(int[] ports, int maxCurrent, double maxOutput, double threshold, XboxController operatorController) {
         if (ports.length != 2) {
             return;
         }
@@ -39,22 +41,27 @@ class Intake {
 
         this.operatorController = operatorController;
         this.maxOutput = maxOutput;
+        this.threshold = threshold;
     }
 
     public void run() {
-        if (operatorController.getBButton()) {
+        if (operatorController.getAButton()) {
+
+        } else if (operatorController.getBumper(Hand.kLeft)) {
+
+        } else if (operatorController.getTriggerAxis(Hand.kLeft) >= threshold) {
 
         } else {
             stop();
         }
-        
+
     }
 
     public void intake() {
         int consta = 1, constb = 1;
 
-        sparkA.set(consta*maxOutput);
-        sparkB.set(constb*maxOutput);
+        sparkA.set(consta * maxOutput);
+        sparkB.set(constb * maxOutput);
     }
 
     public void stop() {

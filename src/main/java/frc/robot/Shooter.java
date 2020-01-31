@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // ? Add feedbackPIDController if necessary
@@ -51,9 +52,9 @@ class Shooter {
     private SpeedControllerGroup shooterGroup; // Groups sparkA and sparkB to the same set function
     private CANEncoder sparkEncoder; // sparkA's builtin encoder
 
-    private DoubleSolenoid hook;
+    private DoubleSolenoid hook; // Holds the balls back until ready to shoot
 
-    private double targetRPM, currentRPM, threshold; // Generic controller constants
+    private double targetRPM, currentRPM, thresholdRPM, thresholdTrigger; // Generic controller constants
     private boolean twoStepController, pidController; // Booleans that determine what control function will be called
 
     private double minOutput, maxOutput; // Lower limit and upper limit of the 2 Step Controller
@@ -63,10 +64,13 @@ class Shooter {
     private double output; // Variable for spinUp
     private boolean inRange; // Flag for whether the the targetRPM is reached
 
-    private boolean activated; // Flag ofr whether spinUp was triggered this cycle
+    private boolean activated; // Flag for whether spinUp was triggered this cycle
+
+    private double waitTime; // Constant for how long to wait before shooting again
+    private double prevTime; // Previous time the ball was shot
 
     public Shooter(int[] ports, int forwardChannel, int reverseChannel, int maxCurrent, double targetRPM,
-            double threshold, double maxOutput, XboxController shooterController) {
+            double waitTime, double thresholdRPM, double thresholdTrigger, double maxOutput, XboxController shooterController) {
         // Ports should be length 2
         if (ports.length != 2) {
             return;
@@ -97,7 +101,9 @@ class Shooter {
         // Store variables
         this.shooterController = shooterController;
         this.targetRPM = targetRPM;
-        this.threshold = threshold;
+        this.waitTime = waitTime;
+        this.thresholdRPM = thresholdRPM;
+        this.thresholdTrigger = thresholdTrigger;
         this.maxOutput = maxOutput;
 
         // Set default values
@@ -210,7 +216,7 @@ class Shooter {
     }
 
     private boolean atTargetRPM() {
-        return Math.abs(targetRPM - currentRPM) < threshold;
+        return Math.abs(targetRPM - currentRPM) < thresholdRPM;
     }
 
     /**
@@ -218,10 +224,10 @@ class Shooter {
      */
     public void run() {
         update();
-        // A Button should be held to activate
-        if (shooterController.getAButton()) {
+
+        // Trigger Button should be held to activate
+        if (shooterController.getTriggerAxis(Hand.kRight) >= thresholdTrigger) {
             shoot();
-            activated = true;
         } else {
             spinDown();
         }
@@ -257,8 +263,10 @@ class Shooter {
      */
     public void shoot() {
         spinUp();
-        if (atTargetRPM()) {
+
+        if (atTargetRPM() && System.currentTimeMillis() - prevTime > waitTime) {
             hook.set(DoubleSolenoid.Value.kForward);
+            prevTime = System.currentTimeMillis();
         }
 
         hook.set(DoubleSolenoid.Value.kReverse);
