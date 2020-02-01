@@ -8,12 +8,12 @@
 package frc.robot;
 
 import frc.robot.intake.*;
-
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.SerialPort.Port;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -22,12 +22,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  public XboxController operatorController;
-  public XboxController driveController;
+  public static XboxController operatorController;
+  public static XboxController driveController;
 
   private Shooter shooter;
   private DriveTrain drive;
   private AutoOptions auto;
+
+  public static AHRS gyro;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -35,6 +37,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    gyro = new AHRS(Port.kUSB);
+
     operatorController = new XboxController(Constants.kOperatorPort);
     driveController = new XboxController(Constants.kDrivePort);
 
@@ -113,6 +117,10 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     //shooter.run();
     drive.run();
+  }
+
+  public void updateSmartDashboard() {
+    SmartDashboard.putNumber("Nav-X Angle", gyro.getAngle());
   }
 
   /**
