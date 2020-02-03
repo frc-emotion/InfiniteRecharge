@@ -25,6 +25,15 @@ public class Constants {
     static final int kShooterReversePort = 3;
     static final int[] kDriveLeftPorts = { 3, 4, 5 };
     static final int[] kDriveRightPorts = { 9, 10, 11 };
+    static final int kPivotPort = 4;
+    static final int[] kIntakePorts = { 5, 6 };
+
+    /**
+     * Digital Ports
+     */
+
+    static final int kPivotLowerLimitPort = 0;
+    static final int kPivotUpperLimitPort = 1;
 
     /**
      * Robot Constants
@@ -41,6 +50,23 @@ public class Constants {
      * Motor Defaults
      */
     static final int kSparkMaxCurrent = 35;
+
+    /**
+     * Pivot Constants
+     */
+
+    static final double kTeleopConstant = 0.5;
+    static final double kCallibrateSpeed = -0.1;
+    static final double kRevToAngle = 42;
+    static final double kPivotThreshold = 0.3;
+    static final double kPivotMaxAngle = 20;
+
+    /**
+     * Intake Constants 
+     */
+
+     static final double kIntakeThreshold = 0.3;
+     static final double kIntakeMaxOutput = 0.5;
 
     /**
      * Shooter General Constants
@@ -75,12 +101,6 @@ public class Constants {
     static final double kSlowPower = 0.4;
     static final double kRegularPower = 0.7;
     static final double kTurboPower = 0.99;
-
-    /**
-     * DriveTrain Ramsete Constants
-     */
-    static final double kDriveB = 2.0;
-    static final double kDriveZeta = 0.7;
 
     /**
      * DriveTrain PID Constants

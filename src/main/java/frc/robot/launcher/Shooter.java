@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.launcher;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * 
  * @author Ryan Chaiyakul
  */
-class Shooter {
+public class Shooter {
     private XboxController shooterController; // Controller checked during run()
     private CANSparkMax sparkA, sparkB; // Two Neos are utilized
     private SpeedControllerGroup shooterGroup; // Groups sparkA and sparkB to the same set function
@@ -228,8 +228,11 @@ class Shooter {
         // Trigger Button should be held to activate
         if (shooterController.getTriggerAxis(Hand.kRight) >= thresholdTrigger) {
             shoot();
-        } else {
+        } else if (shooterController.getAButton()) {
+            hook.set(DoubleSolenoid.Value.kForward);
+        }else {
             spinDown();
+            hook.set(DoubleSolenoid.Value.kReverse);
         }
 
         dashboardRun();

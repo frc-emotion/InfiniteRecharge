@@ -7,7 +7,7 @@
 
 package frc.robot;
 
-import frc.robot.intake.*;
+import frc.robot.launcher.*;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,6 +27,8 @@ public class Robot extends TimedRobot {
 
   private Shooter shooter;
   private DriveTrain drive;
+  private Pivot pivot;
+  private Intake intake;
   private AutoOptions auto;
 
   /**
@@ -39,11 +41,11 @@ public class Robot extends TimedRobot {
     driveController = new XboxController(Constants.kDrivePort);
 
     auto = new AutoOptions(Constants.kStartingLocations, Constants.kValidColors);
-    
+
     // Shooter Initialization
     shooter = new Shooter(Constants.kShooterPorts, Constants.kShooterForwardPort, Constants.kShooterReversePort,
-        Constants.kSparkMaxCurrent, Constants.kShooterRPM, Constants.kShooterWaitTime, Constants.kShooterThresholdRPM, Constants.kShooterThresholdTrigger, Constants.kShooterMaxOutput,
-        operatorController);
+        Constants.kSparkMaxCurrent, Constants.kShooterRPM, Constants.kShooterWaitTime, Constants.kShooterThresholdRPM,
+        Constants.kShooterThresholdTrigger, Constants.kShooterMaxOutput, operatorController);
 
     // Get Shooter Controller
     SendableChooser<String> shooterSelector = new SendableChooser<>();
@@ -59,7 +61,12 @@ public class Robot extends TimedRobot {
     }
 
     shooterSelector.close();
-    
+
+    pivot = new Pivot(Constants.kPivotPort, Constants.kSparkMaxCurrent, Constants.kPivotLowerLimitPort, Constants.kPivotUpperLimitPort,
+        Constants.kTeleopConstant, Constants.kCallibrateSpeed, Constants.kRevToAngle, Constants.kPivotThreshold,
+        Constants.kPivotMaxAngle, operatorController);
+
+    intake = new Intake(Constants.kIntakePorts, Constants.kSparkMaxCurrent, Constants.kIntakeMaxOutput, Constants.kIntakeThreshold, operatorController);
 
     drive = new DriveTrain(Constants.kDriveLeftPorts, Constants.kDriveRightPorts, Constants.kSparkMaxCurrent,
         Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, driveController);
@@ -111,7 +118,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //shooter.run();
+    // shooter.run();
     drive.run();
   }
 

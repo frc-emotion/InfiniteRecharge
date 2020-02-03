@@ -1,4 +1,4 @@
-package frc.robot.intake;
+package frc.robot.launcher;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 
-class Intake {
+public class Intake {
     private XboxController operatorController;
     private CANSparkMax sparkA, sparkB;
     private SpeedControllerGroup intakeGroup;
@@ -18,7 +18,7 @@ class Intake {
     private double maxOutput;
     private double threshold;
 
-    Intake(int[] ports, int maxCurrent, double maxOutput, double threshold, XboxController operatorController) {
+    public Intake(int[] ports, int maxCurrent, double maxOutput, double threshold, XboxController operatorController) {
         if (ports.length != 2) {
             return;
         }
@@ -35,7 +35,6 @@ class Intake {
 
         for (CANSparkMax spark : sparkList) {
             spark.setSecondaryCurrentLimit(maxCurrent);
-            spark.set(maxCurrent);
             spark.setIdleMode(IdleMode.kBrake);
         }
 
@@ -48,12 +47,16 @@ class Intake {
         if (operatorController.getAButton()) {
 
         } else if (operatorController.getBumper(Hand.kLeft)) {
-
+            tubeIntake();
         } else if (operatorController.getTriggerAxis(Hand.kLeft) >= threshold) {
-
+            intake();
         } else {
             stop();
         }
+
+    }
+
+    public void tubeIntake() {
 
     }
 

@@ -1,7 +1,5 @@
 package frc.robot.drivetrain;
 
-import java.util.HashMap;
-
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.ControlType;
@@ -13,8 +11,6 @@ class DriveController {
     private CANPIDController lController, rController;
     private SpeedControllerGroup lGroup, rGroup;
 
-    private HashMap<Character, Boolean> enabled;
-
     DriveController(CANEncoder lEncoder, CANEncoder rEncoder, CANPIDController lController,
             CANPIDController rController, SpeedControllerGroup lGroup, SpeedControllerGroup rGroup) {
         this.lEncoder = lEncoder;
@@ -23,11 +19,6 @@ class DriveController {
         this.rController = rController;
         this.lGroup = lGroup;
         this.rGroup = rGroup;
-
-        enabled = new HashMap<Character, Boolean>();
-
-        enabled.put('l', false);
-        enabled.put('r', false);
     }
 
     private CANPIDController getController(char selector) {
@@ -55,6 +46,5 @@ class DriveController {
 
     public void setRefrence(char selector, double value, ControlType controlType) {
         getController(selector).setReference(value, controlType);
-        enabled.put(selector, true);
     }
 }
