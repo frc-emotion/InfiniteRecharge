@@ -13,4 +13,8 @@ public class Distance {
     public double getDistance(double ty) {
         return (refrenceHeight - mountingHeight) / Math.tan(ty + mountingAngle);
     }
+
+    public double getHeight() {
+        return refrenceHeight - mountingHeight;
+    }
 }

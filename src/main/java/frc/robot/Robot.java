@@ -8,6 +8,7 @@
 package frc.robot;
 
 import frc.robot.launcher.*;
+import frc.robot.drivetrain.*;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -66,10 +67,10 @@ public class Robot extends TimedRobot {
         Constants.kTeleopConstant, Constants.kCallibrateSpeed, Constants.kRevToAngle, Constants.kPivotThreshold,
         Constants.kPivotMaxAngle, operatorController);
 
-    intake = new Intake(Constants.kIntakePorts, Constants.kSparkMaxCurrent, Constants.kIntakeMaxOutput, Constants.kIntakeThreshold, operatorController);
+    intake = new Intake(Constants.kIntakePorts, Constants.kSparkMaxCurrent, Constants.kIntakeOutput, Constants.kTubeOutput, Constants.kIntakeThreshold, operatorController);
 
     drive = new DriveTrain(Constants.kDriveLeftPorts, Constants.kDriveRightPorts, Constants.kSparkMaxCurrent,
-        Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, driveController);
+        Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, Constants.kInvert, driveController);
   }
 
   /**

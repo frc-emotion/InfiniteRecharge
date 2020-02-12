@@ -66,7 +66,8 @@ public class Constants {
      */
 
      static final double kIntakeThreshold = 0.3;
-     static final double kIntakeMaxOutput = 0.5;
+     static final double kIntakeOutput = 0.5;
+     static final double kTubeOutput = 0.5;
 
     /**
      * Shooter General Constants
@@ -101,6 +102,7 @@ public class Constants {
     static final double kSlowPower = 0.4;
     static final double kRegularPower = 0.7;
     static final double kTurboPower = 0.99;
+    static final boolean kInvert = false; // default value
 
     /**
      * DriveTrain PID Constants

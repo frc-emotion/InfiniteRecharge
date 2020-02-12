@@ -10,8 +10,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.PIDControl;
 
 /**
  * Class that runs the drive train
@@ -36,16 +38,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class DriveTrain {
     private XboxController driveController; // Controller checked during run()
     private CANSparkMax lsparkA, lsparkB, lsparkC, rsparkA, rsparkB, rsparkC; // Neos for the driveTrain
-    private CANEncoder lEncoder, rEncoder;
     private ArrayList<CANSparkMax> sparkList; // List of Neos from L to R and A to C
     private SpeedControllerGroup leftGroup, rightGroup; // SpeedController groups for each side
     private DifferentialDrive drive; // DifferentialDrive object
     private double slowPower, regularPower, turboPower; // Save power values
+    private boolean invert; // Flag for whether directions are inverted
 
-    private DriveController controller;
+    private Alignment alignment;
+
+    private PIDControl pidControl;
+    private double maxSpeed;
 
     public DriveTrain(int[] leftPorts, int[] rightPorts, int maxCurrent, double slowPower, double regularPower,
-            double turboPower, XboxController driveController) {
+            double turboPower, boolean invert, XboxController driveController) {
         // 3 Ports for each side
         if (leftPorts.length != 3 || rightPorts.length != 3) {
             return;
@@ -80,9 +85,6 @@ public class DriveTrain {
         leftGroup = new SpeedControllerGroup(lsparkA, lsparkB, lsparkC);
         rightGroup = new SpeedControllerGroup(rsparkA, rsparkB, rsparkC);
 
-        lEncoder = lsparkA.getEncoder();
-        rEncoder = rsparkA.getEncoder();
-
         drive = new DifferentialDrive(leftGroup, rightGroup);
 
         // Store variables
@@ -90,13 +92,36 @@ public class DriveTrain {
         this.slowPower = slowPower;
         this.regularPower = regularPower;
         this.turboPower = turboPower;
+        this.invert = invert;
     }
 
-    public void enableController(char selector, double kP, double kI, double kD) {
-        controller = new DriveController(lEncoder, rEncoder, lsparkA.getPIDController(), rsparkA.getPIDController(), leftGroup, rightGroup);
+    public void enablePIDControl(float kP, float kI, float kD, double tolerance, double maxSpeed, double maxRotation) {
+        pidControl = new PIDControl(kP, kI, kD);
+
+        pidControl.setTolerance(tolerance);
+        pidControl.setMaxSpeed(maxRotation);
+
+        this.maxSpeed = maxSpeed;
     }
+
+    public void enableAlignment(int pipeline) {
+        alignment = new Alignment(pipeline);
+    }
+
     public void align() {
+        if (alignment.targetFound()) {
+            drive.arcadeDrive(maxSpeed, pidControl.getValue(0, alignment.getError()));
+            driveController.setRumble(RumbleType.kLeftRumble, 0.3);
+            driveController.setRumble(RumbleType.kRightRumble, 0.3);
+        } else {
+            driveController.setRumble(RumbleType.kLeftRumble, 0.7);
+            driveController.setRumble(RumbleType.kRightRumble, 0.7);
+        }
+    }
 
+    private void reset() {
+        driveController.setRumble(RumbleType.kLeftRumble, 0);
+        driveController.setRumble(RumbleType.kRightRumble, 0);
     }
 
     /**
@@ -104,10 +129,15 @@ public class DriveTrain {
      */
     public void run() {
 
-        if (driveController.getAButton()) {
+        if (driveController.getAButtonPressed()) {
+            invert = !invert;
+        } else if (driveController.getBButton()) {
+            align();
         } else {
             runTankDrive();
         }
+
+        reset();
         dashboardRun();
     }
 
@@ -133,6 +163,13 @@ public class DriveTrain {
         if (lAxis < 0) {
             constL *= 1;
         } else if (lAxis > 0) {
+            constL *= -1;
+        }
+
+        // Check if controls inverted
+
+        if (invert) {
+            constL *= -1;
             constL *= -1;
         }
 
@@ -167,5 +204,7 @@ public class DriveTrain {
         }
 
         SmartDashboard.putNumberArray("DriveTrainTemperature(lA|lB|lC|rA|rB|rC)", motorTemps);
+        SmartDashboard.putBoolean("Aligned", pidControl.isInRange());
+        SmartDashboard.putBoolean("PortFound", alignment.targetFound());
     }
 }

@@ -8,17 +8,23 @@ class Alignment {
 
     Alignment(int pipeline) {
         limeLight = new LimeLight();
-        
+
         this.pipeline = pipeline;
     }
 
-    public double getError() {
+    public boolean targetFound() {
         limeLight.selectPipeline(pipeline);
 
         if (limeLight.getTv() == 0) {
-            return -1;
+            return false;
         }
+        return true;
+    }
 
-        return limeLight.getTx();
+    public double getError() {
+        if (targetFound()) {
+            return limeLight.getTx();
+        }
+        return -1;
     }
 }

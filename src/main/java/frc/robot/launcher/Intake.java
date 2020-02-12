@@ -12,13 +12,15 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 public class Intake {
     private XboxController operatorController;
-    private CANSparkMax sparkA, sparkB;
+    private CANSparkMax sparkA, sparkB, sparkC, sparkD;
+    private SpeedControllerGroup tubeGroup;
     private SpeedControllerGroup intakeGroup;
 
-    private double maxOutput;
+    private double tubeOutput;
+    private double intakeOutput;
     private double threshold;
 
-    public Intake(int[] ports, int maxCurrent, double maxOutput, double threshold, XboxController operatorController) {
+    public Intake(int[] ports, int maxCurrent, double intakeOutput, double tubeOutput, double threshold, XboxController operatorController) {
         if (ports.length != 2) {
             return;
         }
@@ -39,32 +41,50 @@ public class Intake {
         }
 
         this.operatorController = operatorController;
-        this.maxOutput = maxOutput;
+        this.tubeOutput = tubeOutput;
+        this.intakeOutput = intakeOutput;
         this.threshold = threshold;
     }
 
     public void run() {
         if (operatorController.getAButton()) {
 
-        } else if (operatorController.getBumper(Hand.kLeft)) {
+        }
+
+        if (operatorController.getBumper(Hand.kLeft)) {
             tubeIntake();
-        } else if (operatorController.getTriggerAxis(Hand.kLeft) >= threshold) {
+        } else {
+            tubeGroup.set(0);
+        }
+
+        if (operatorController.getTriggerAxis(Hand.kLeft) >= threshold) {
             intake();
         } else {
-            stop();
+            intakeGroup.set(0);
         }
 
     }
 
-    public void tubeIntake() {
+    public void tubeDown() {
 
+    }
+
+    public void tubeUp() {
+
+    }
+
+    public void tubeIntake() {
+        int constc = 1, constd = 1;
+
+        sparkC.set(constc * tubeOutput);
+        sparkD.set(constd * tubeOutput);
     }
 
     public void intake() {
         int consta = 1, constb = 1;
 
-        sparkA.set(consta * maxOutput);
-        sparkB.set(constb * maxOutput);
+        sparkA.set(consta * intakeOutput);
+        sparkB.set(constb * intakeOutput);
     }
 
     public void stop() {
