@@ -1,5 +1,7 @@
 package frc.robot.launcher;
 
+import frc.robot.limelight.*;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -12,13 +14,16 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 public class Pivot {
     private XboxController operatorController;
     private CANSparkMax screwMotor;
-    private DigitalInput lowerLimit, upperLimit;
+    private DigitalInput lowerLimit;
 
-    private double threshold, maxAngle, revToAngle, callibrateSpeed;
+    private double controllerThreshold, angleThreshold, maxAngle, revToAngle, setAngle, callibrateSpeed;
     private double teleopConstant;
 
-    public Pivot(int motorPort, int maxCurrent, int lowerLimitPort, int upperLimitPort, double teleopConstant, double callibrateSpeed,
-            double revToAngle, double threshold, double maxAngle, XboxController operatorController) {
+    private Alignment alignment;
+
+    public Pivot(int motorPort, int maxCurrent, int lowerLimitPort, double teleopConstant,
+            double callibrateSpeed, double revToAngle, double controllerThreshold, double angleThreshold, double maxAngle,
+            XboxController operatorController) {
         screwMotor = new CANSparkMax(motorPort, MotorType.kBrushless);
 
         screwMotor.setSecondaryCurrentLimit(maxCurrent);
@@ -26,14 +31,23 @@ public class Pivot {
         screwMotor.setIdleMode(IdleMode.kBrake);
 
         lowerLimit = new DigitalInput(lowerLimitPort);
-        upperLimit = new DigitalInput(upperLimitPort);
+
 
         this.operatorController = operatorController;
         this.teleopConstant = teleopConstant;
-        this.threshold = threshold;
+        this.controllerThreshold = controllerThreshold;
+        this.angleThreshold = angleThreshold;
         this.callibrateSpeed = callibrateSpeed;
         this.maxAngle = maxAngle;
         this.revToAngle = revToAngle;
+
+        setAngle = 0;
+    }
+
+    public void enableAlignment(double mountingHeight, double mountingAngle, double refrenceHeight, int pipeline,
+            double maxVelocity) {
+        this.alignment = new Alignment(new Distance(mountingHeight, mountingAngle, refrenceHeight), new LimeLight(),
+                pipeline, maxVelocity);
     }
 
     public void callibrate() {
@@ -49,11 +63,23 @@ public class Pivot {
         return screwMotor.getEncoder().getPosition() * revToAngle;
     }
 
-    public void run() {
-        if (Math.abs(operatorController.getY(Hand.kLeft)) > threshold) {
-            setAngle(getAngle() + operatorController.getY(Hand.kLeft) * teleopConstant); // Currently exponential
+    public boolean isInRange() {
+        return Math.abs(getAngle() - setAngle) < angleThreshold;
+    }
 
+    public void run() {
+        if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
+            setAngle(setAngle + operatorController.getY(Hand.kLeft) * teleopConstant); // y' = y + kx
+        } else if (operatorController.getBButton()) {
+            setAngle();
         }
+    }
+
+    public void setAngle() {
+        if (alignment.getAngle() == -1) {
+            return;
+        }
+        setAngle(alignment.getAngle());
     }
 
     public void setAngle(double angle) {
@@ -69,9 +95,8 @@ public class Pivot {
             }
 
             screwMotor.set(0);
-        } else if (upperLimit.get() && angle >= screwMotor.getEncoder().getPosition() * revToAngle) {
-            screwMotor.set(0);
         } else {
+            setAngle = angle;
             screwMotor.getPIDController().setReference(angle / revToAngle, ControlType.kPosition);
         }
     }

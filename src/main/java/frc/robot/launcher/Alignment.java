@@ -4,7 +4,6 @@ import frc.robot.limelight.Distance;
 import frc.robot.limelight.LimeLight;
 
 class Alignment {
-    private Pivot pivot;
     private Distance distance;
     private LimeLight limeLight;
     private int pipeline;
@@ -12,33 +11,60 @@ class Alignment {
     private double velocity;
     private double maxDisplacement;
 
-    Alignment(Pivot pivot, Distance distance, LimeLight limeLight, int pipeline, double velocity) {
-        this.pivot = pivot;
+    Alignment(Distance distance, LimeLight limeLight, int pipeline, double velocity) {
         this.distance = distance;
         this.limeLight = limeLight;
         this.pipeline = pipeline;
         this.velocity = velocity;
 
-        maxDisplacement = velocity * Math.cos(45) * getTime(45);
+        maxDisplacement = getDistance(Math.atan(Math.pow(velocity, 2) / 9.81));
     }
 
-    public double getTime(double theta) {
+    private double getTime(double theta) {
         if (theta < 0) {
-            return -1
+            return -1;
         }
         if (theta > 90) {
-            return -1
+            return -1;
         }
-        return Math.sqrt(2*-9.81*distance.getHeight() + Math.pow(velocity * Math.sin(45), 2)) + velocity * Math.sin(theta);
+
+        return Math.sqrt(2 * distance.getHeight() / 9.81 + Math.pow(velocity * Math.sin(theta) / 9.81, 2))
+                + velocity * Math.sin(theta) / 9.81;
     }
 
-    public double getAngle() {
+    private double getErrorAngle() {
         limeLight.selectPipeline(pipeline);
         if (limeLight.getTv() == 0) {
             return -1;
         }
 
-        displacement = distance.getDistance(limeLight.getTy());
+        return distance.getAngle(limeLight.getTy());
+    }
 
+    private double getDistance(double theta) {
+        if (theta < 0) {
+            return -1;
+        }
+        if (theta > 90) {
+            return -1;
+        }
+
+        return velocity * Math.cos(theta) * getTime(theta);
+    }
+
+    public double getAngle() {
+        double theta = getErrorAngle();
+        if (theta < 0) {
+            return -1;
+        }
+        if (theta > 90) {
+            return -1;
+        }
+
+        if (getDistance(theta) > maxDisplacement) {
+            return -1;
+        }
+
+        return Math.acos(getDistance(theta) / (velocity * getTime(theta)));
     }
 }

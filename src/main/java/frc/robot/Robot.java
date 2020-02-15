@@ -28,7 +28,6 @@ public class Robot extends TimedRobot {
 
   private Shooter shooter;
   private DriveTrain drive;
-  private Pivot pivot;
   private Intake intake;
   private AutoOptions auto;
 
@@ -63,11 +62,13 @@ public class Robot extends TimedRobot {
 
     shooterSelector.close();
 
-    pivot = new Pivot(Constants.kPivotPort, Constants.kSparkMaxCurrent, Constants.kPivotLowerLimitPort, Constants.kPivotUpperLimitPort,
-        Constants.kTeleopConstant, Constants.kCallibrateSpeed, Constants.kRevToAngle, Constants.kPivotThreshold,
-        Constants.kPivotMaxAngle, operatorController);
+    shooter.enablePivot(Constants.kPivotPort, Constants.kSparkMaxCurrent, Constants.kPivotLowerLimitPort, Constants.kTeleopConstant, Constants.kCallibrateSpeed, Constants.kRevToAngle,
+        Constants.kPivotControllerThreshold, Constants.kPivotAngleThreshold, Constants.kPivotMaxAngle,
+        Constants.kMountingHeight, Constants.kMountingAngle, Constants.kRefrenceHeight, Constants.kPortPipeline,
+        Constants.kShooterMaxVelocity);
 
-    intake = new Intake(Constants.kIntakePorts, Constants.kSparkMaxCurrent, Constants.kIntakeOutput, Constants.kTubeOutput, Constants.kIntakeThreshold, operatorController);
+    intake = new Intake(Constants.kIntakePorts, Constants.kSparkMaxCurrent, Constants.kIntakeForwardPort, Constants.kIntakeReversePort, Constants.kIntakeOutput,
+        Constants.kTubeOutput, Constants.kIntakeThreshold, operatorController);
 
     drive = new DriveTrain(Constants.kDriveLeftPorts, Constants.kDriveRightPorts, Constants.kSparkMaxCurrent,
         Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, Constants.kInvert, driveController);
@@ -119,8 +120,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    // shooter.run();
+    shooter.run();
     drive.run();
+    intake.run();
   }
 
   /**

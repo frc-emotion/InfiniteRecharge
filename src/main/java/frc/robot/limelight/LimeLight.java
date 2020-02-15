@@ -6,10 +6,7 @@ public class LimeLight {
     private String table;
 
     public LimeLight() {
-        this("limelight");
-    }
-    public LimeLight(String table) {
-        this.table = table;    
+        table = "limelight";
     }
 
     private double GetEntry(String selector) {

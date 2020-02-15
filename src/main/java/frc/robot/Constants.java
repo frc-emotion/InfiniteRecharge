@@ -20,9 +20,11 @@ public class Constants {
     /**
      * CANBUS Ports
      */
-    static final int[] kShooterPorts = { 0, 1 };
+    static final int[] kShooterPorts = { 1, 2 };
     static final int kShooterForwardPort = 2;
     static final int kShooterReversePort = 3;
+    static final int kIntakeForwardPort = 4;
+    static final int kIntakeReversePort = 5;
     static final int[] kDriveLeftPorts = { 3, 4, 5 };
     static final int[] kDriveRightPorts = { 9, 10, 11 };
     static final int kPivotPort = 4;
@@ -36,6 +38,12 @@ public class Constants {
     static final int kPivotUpperLimitPort = 1;
 
     /**
+     * LimeLight Pipelines
+     */
+
+     static final int kPortPipeline = 0;
+
+    /**
      * Robot Constants
      */
 
@@ -45,6 +53,14 @@ public class Constants {
     static final double kWheelRadius = 0.15242;
     static final double kMaxVelocity = 2;
     static final double kMaxAcceleration = 0.5; // Not verified
+
+    /**
+     * LimeLight Constants
+     */
+
+     static final double kMountingHeight = 0.25;
+     static final double kMountingAngle = 20;
+     static final double kRefrenceHeight = 3.3;
 
     /**
      * Motor Defaults
@@ -58,7 +74,8 @@ public class Constants {
     static final double kTeleopConstant = 0.5;
     static final double kCallibrateSpeed = -0.1;
     static final double kRevToAngle = 42;
-    static final double kPivotThreshold = 0.3;
+    static final double kPivotControllerThreshold = 0.3;
+    static final double kPivotAngleThreshold = 5;
     static final double kPivotMaxAngle = 20;
 
     /**
@@ -72,11 +89,13 @@ public class Constants {
     /**
      * Shooter General Constants
      */
-    static final double kShooterRPM = 300;
-    static final double kShooterThresholdRPM = 30;
+    static final double kShooterRPM = 5000;
+    static final double kShooterThresholdRPM = 50;
     static final double kShooterThresholdTrigger = 0.3;
-    static final double kShooterMaxOutput = 0.7;
+    static final double kShooterMaxOutput = 1;
     static final double kShooterWaitTime = 500;
+
+    static final double kShooterMaxVelocity = 10;
 
     /**
      * Shooter Choosable Controller Constants

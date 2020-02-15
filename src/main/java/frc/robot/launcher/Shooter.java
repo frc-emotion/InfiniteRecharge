@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,7 +48,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Shooter {
     private XboxController shooterController; // Controller checked during run()
     private CANSparkMax sparkA, sparkB; // Two Neos are utilized
-    private SpeedControllerGroup shooterGroup; // Groups sparkA and sparkB to the same set function
     private CANEncoder sparkEncoder; // sparkA's builtin encoder
 
     private DoubleSolenoid hook; // Holds the balls back until ready to shoot
@@ -69,8 +67,11 @@ public class Shooter {
     private double waitTime; // Constant for how long to wait before shooting again
     private double prevTime; // Previous time the ball was shot
 
+    private Pivot pivot;
+
     public Shooter(int[] ports, int forwardChannel, int reverseChannel, int maxCurrent, double targetRPM,
-            double waitTime, double thresholdRPM, double thresholdTrigger, double maxOutput, XboxController shooterController) {
+            double waitTime, double thresholdRPM, double thresholdTrigger, double maxOutput,
+            XboxController shooterController) {
         // Ports should be length 2
         if (ports.length != 2) {
             return;
@@ -94,7 +95,6 @@ public class Shooter {
         }
 
         sparkEncoder = sparkA.getEncoder();
-        shooterGroup = new SpeedControllerGroup(sparkA, sparkB);
 
         hook = new DoubleSolenoid(forwardChannel, reverseChannel);
 
@@ -112,6 +112,16 @@ public class Shooter {
         currentRPM = 0;
         minOutput = 0;
         kI = kD = 0;
+    }
+
+    public void enablePivot(int motorPort, int maxCurrent, int lowerLimitPort, double teleopConstant,
+            double callibrateSpeed, double revToAngle, double controllerThreshold, double angleThreshold,
+            double maxAngle, double mountingHeight, double mountingAngle, double refrenceHeight, int pipeline,
+            double maxVelocity) {
+        pivot = new Pivot(motorPort, maxCurrent, lowerLimitPort, teleopConstant, callibrateSpeed, revToAngle,
+                controllerThreshold, angleThreshold, maxAngle, shooterController);
+        pivot.enableAlignment(mountingHeight, mountingAngle, refrenceHeight, pipeline, maxVelocity);
+
     }
 
     /**
@@ -229,9 +239,11 @@ public class Shooter {
         if (shooterController.getTriggerAxis(Hand.kRight) >= thresholdTrigger) {
             shoot();
         } else if (shooterController.getAButton()) {
-            hook.set(DoubleSolenoid.Value.kForward);
-        }else {
+            spinUp();
+        } else {
+            pivot.run();
             spinDown();
+            prevTime = 0;
             hook.set(DoubleSolenoid.Value.kReverse);
         }
 
@@ -266,8 +278,13 @@ public class Shooter {
      */
     public void shoot() {
         spinUp();
+        pivot.setAngle();
 
-        if (atTargetRPM() && System.currentTimeMillis() - prevTime > waitTime) {
+        if (prevTime == 0) {
+            prevTime = System.currentTimeMillis();
+        }
+
+        if (atTargetRPM() && pivot.isInRange() && System.currentTimeMillis() - prevTime > waitTime) {
             hook.set(DoubleSolenoid.Value.kForward);
             prevTime = System.currentTimeMillis();
         }
@@ -286,14 +303,16 @@ public class Shooter {
             output = runTwoStepController();
         }
 
-        shooterGroup.set(output);
+        sparkA.set(output);
+        sparkB.set(-output);
     }
 
     /**
      * Function called by run or autonomous periodically to set motors to off
      */
     public void spinDown() {
-        shooterGroup.set(0);
+        sparkA.set(0);
+        sparkB.set(0);
         setBrakeMode();
     }
 

@@ -2,7 +2,6 @@ package frc.robot.drivetrain;
 
 import java.util.ArrayList;
 
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
