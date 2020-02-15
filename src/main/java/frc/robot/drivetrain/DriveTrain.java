@@ -2,9 +2,12 @@ package frc.robot.drivetrain;
 
 import java.util.ArrayList;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,6 +16,14 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.PIDControl;
+import frc.robot.PathConverter;
+import frc.robot.PathTrajectories;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import edu.wpi.first.wpilibj.Filesystem;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Class that runs the drive train
@@ -48,6 +59,13 @@ public class DriveTrain {
     private PIDControl pidControl;
     private double maxSpeed;
 
+    public CANEncoder lEncoder, rEncoder;
+
+    private PathConverter pathConverter;
+    private boolean pathDone;
+
+    private SendableChooser<Integer> driveChoices, pathChoices;
+
     public DriveTrain(int[] leftPorts, int[] rightPorts, int maxCurrent, double slowPower, double regularPower,
             double turboPower, boolean invert, XboxController driveController) {
         // 3 Ports for each side
@@ -62,6 +80,9 @@ public class DriveTrain {
         rsparkA = new CANSparkMax(rightPorts[0], MotorType.kBrushless);
         rsparkB = new CANSparkMax(rightPorts[1], MotorType.kBrushless);
         rsparkC = new CANSparkMax(rightPorts[2], MotorType.kBrushless);
+
+        lEncoder = lsparkA.getEncoder();
+        rEncoder = rsparkA.getEncoder();
 
         // Group sparks into an ArrayList for a cleaner intialization loop
         sparkList = new ArrayList<CANSparkMax>() {
@@ -126,23 +147,93 @@ public class DriveTrain {
     /**
      * Function that should be called by teleopPeriodic
      */
-    public void run() {
 
-        if (driveController.getAButtonPressed()) {
-            invert = !invert;
-        } else if (driveController.getBButton()) {
-            align();
-        } else {
-            runTankDrive();
+    public void run() {
+        int driveChoice = driveChoices.getSelected();
+        switch (driveChoice) {
+        case 0:
+            // Lets worry about this after drive train works
+            runPathFinderChoices();
+            break;
+        default:
+            if (driveController.getAButtonPressed()) {
+                invert = !invert;
+            } else if (driveController.getBButton()) {
+                align();
+            } else {
+                runTankDrive();
+            }
         }
 
         reset();
         dashboardRun();
     }
 
+    private void runPathFinderChoices() {
+        if (!pathDone) {
+            runPathFinder();
+            pathDone = true;
+        }
+        if (pathConverter.isDriveAllowed())
+            runTankDrive();
+    }
+
     /**
      * Function that sets the speeds for the DifferentialDrive object periodically
      */
+
+    public CANEncoder getDriveEncoder(char side) {
+        if (side == 'r')
+            return rEncoder;
+        else if (side == 'l')
+            return lEncoder;
+        else
+            return null;
+    }
+
+    public void runPathFinder() {
+        int pathChoice = pathChoices.getSelected().intValue();
+        String pathName = "";
+
+        switch (pathChoice) {
+        case 0:
+            pathName = "righthab";
+            break;
+        case 1:
+            pathName = "straighthab";
+            break;
+        case 2:
+            Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+                    Trajectory.Config.SAMPLES_HIGH, 0.02, 0.4, 0.8, 5.0);
+            Trajectory trajectory = Pathfinder.generate(PathTrajectories.rightHab, config);
+
+            pathConverter = new PathConverter(this, trajectory);
+            pathConverter.setUpFollowers();
+            pathConverter.followPath();
+            break;
+        default:
+            // do nothing
+            break;
+        }
+
+        if (!pathName.equals("")) {
+            String dir = Filesystem.getDeployDirectory().toString();
+            String fileName = pathName + ".pf1.csv";
+
+            File trajFile = new File(dir + "/" + fileName);
+
+            Trajectory traj = null;
+            try {
+                traj = Pathfinder.readFromCSV(trajFile);
+                pathConverter = new PathConverter(this, traj);
+                pathConverter.setUpFollowers();
+                pathConverter.followPath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void runTankDrive() {
         // constants to easily configure if drive is opposite
         int constR = 1, constL = 1;
@@ -205,5 +296,9 @@ public class DriveTrain {
         SmartDashboard.putNumberArray("DriveTrainTemperature(lA|lB|lC|rA|rB|rC)", motorTemps);
         SmartDashboard.putBoolean("Aligned", pidControl.isInRange());
         SmartDashboard.putBoolean("PortFound", alignment.targetFound());
+    }
+
+    public DifferentialDrive getDrive() {
+        return drive;
     }
 }

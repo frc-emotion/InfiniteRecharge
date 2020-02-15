@@ -49,10 +49,14 @@ public class Constants {
 
     // Flipper Constants
 
-    static final double kTrackWidth = 0.6898513;
-    static final double kWheelRadius = 0.15242;
-    static final double kMaxVelocity = 2;
-    static final double kMaxAcceleration = 0.5; // Not verified
+    public static double WHEELBASE_WIDTH = 0.6898513;
+    public static double WHEEL_DIAMETER = 0.1524;
+    public static double MAX_VELOCITY = 2;
+    static final double MAX_ACCELERATION = 0.5; // Not verified
+
+    public static final int ENCODER_REV = 42;// temporary
+
+    public static final int WHEEL_REV = 7;
 
     /**
      * LimeLight Constants
