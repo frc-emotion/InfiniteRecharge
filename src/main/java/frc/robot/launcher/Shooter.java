@@ -238,8 +238,6 @@ public class Shooter {
         // Trigger Button should be held to activate
         if (shooterController.getTriggerAxis(Hand.kRight) >= thresholdTrigger) {
             shoot();
-        } else if (shooterController.getAButton()) {
-            spinUp();
         } else {
             pivot.run();
             spinDown();
@@ -279,6 +277,7 @@ public class Shooter {
     public void shoot() {
         spinUp();
         pivot.setAngle();
+        
 
         if (prevTime == 0) {
             prevTime = System.currentTimeMillis();

@@ -68,10 +68,19 @@ public class Pivot {
     }
 
     public void run() {
-        if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
+        /**
+         * if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
             setAngle(setAngle + operatorController.getY(Hand.kLeft) * teleopConstant); // y' = y + kx
         } else if (operatorController.getBButton()) {
             setAngle();
+        }
+         */
+        if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
+            screwMotor.set(operatorController.getY(Hand.kLeft) * teleopConstant);
+        } else if (operatorController.getBButton()) {
+            callibrate();
+        } else {
+            screwMotor.set(0);
         }
     }
 

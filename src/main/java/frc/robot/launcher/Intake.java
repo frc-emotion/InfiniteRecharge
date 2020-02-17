@@ -7,7 +7,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -15,8 +15,6 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 public class Intake {
     private XboxController operatorController;
     private CANSparkMax sparkA, sparkB, sparkC, sparkD;
-    private SpeedControllerGroup tubeGroup;
-    private SpeedControllerGroup intakeGroup;
 
     private DoubleSolenoid intakeSolenoid;
 
@@ -64,7 +62,7 @@ public class Intake {
             intakeUp();
         }
 
-        if (operatorController.getBumper(Hand.kLeft)) {
+        if (operatorController.getBumper(Hand.kLeft) || operatorController.getTriggerAxis(Hand.kRight) >= threshold) {
             tubeIntake();
         } else {
             tubeOff();
@@ -87,24 +85,26 @@ public class Intake {
     }
 
     public void tubeIntake() {
-        int constc = 1, constd = 1;
+        int constc = 1, constd = -1;
 
         sparkC.set(constc * tubeOutput);
         sparkD.set(constd * tubeOutput);
     }
 
     public void tubeOff() {
-        tubeGroup.set(0);
+        sparkC.set(0);
+        sparkD.set(0);
     }
 
     public void intake() {
-        int consta = 1, constb = 1;
+        int consta = -1, constb = 1;
 
         sparkA.set(consta * intakeOutput);
         sparkB.set(constb * intakeOutput);
     }
 
     public void intakeOff() {
-        intakeGroup.set(0);
+        sparkA.set(0);
+        sparkB.set(0);
     }
 }

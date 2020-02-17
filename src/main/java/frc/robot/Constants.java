@@ -21,14 +21,18 @@ public class Constants {
      * CANBUS Ports
      */
     static final int[] kShooterPorts = { 1, 2 };
-    static final int kShooterForwardPort = 2;
-    static final int kShooterReversePort = 3;
-    static final int kIntakeForwardPort = 4;
-    static final int kIntakeReversePort = 5;
     static final int[] kDriveLeftPorts = { 3, 4, 5 };
-    static final int[] kDriveRightPorts = { 9, 10, 11 };
-    static final int kPivotPort = 4;
-    static final int[] kIntakePorts = { 5, 6 };
+    static final int[] kDriveRightPorts = { 6, 9, 10 };
+    static final int kPivotPort = 11;
+    static final int[] kIntakePorts = { 12, 13, 14, 15 };
+
+    /**
+     * Pneumatics Ports
+     */
+    static final int kShooterForwardPort = 0;
+    static final int kShooterReversePort = 1;
+    static final int kIntakeForwardPort = 2;
+    static final int kIntakeReversePort = 3;
 
     /**
      * Digital Ports
@@ -71,7 +75,7 @@ public class Constants {
      * Pivot Constants
      */
 
-    static final double kTeleopConstant = 0.5;
+    static final double kTeleopConstant = 0.25;
     static final double kCallibrateSpeed = -0.1;
     static final double kRevToAngle = 42;
     static final double kPivotControllerThreshold = 0.3;
@@ -83,13 +87,13 @@ public class Constants {
      */
 
      static final double kIntakeThreshold = 0.3;
-     static final double kIntakeOutput = 0.5;
-     static final double kTubeOutput = 0.5;
+     static final double kIntakeOutput = 0.3;
+     static final double kTubeOutput = 0.7;
 
     /**
      * Shooter General Constants
      */
-    static final double kShooterRPM = 5000;
+    static final double kShooterRPM = 5675;
     static final double kShooterThresholdRPM = 50;
     static final double kShooterThresholdTrigger = 0.3;
     static final double kShooterMaxOutput = 1;
@@ -106,7 +110,7 @@ public class Constants {
     /**
      * Shooter Two Step Constants
      */
-    static final double kShooterMinOutput = 0;
+    static final double kShooterMinOutput = 0.5;
 
     /**
      * Shooter PID Constants

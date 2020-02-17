@@ -130,7 +130,9 @@ public class DriveTrain {
 
         if (driveController.getAButtonPressed()) {
             invert = !invert;
-        } else if (driveController.getBButton()) {
+        }
+
+        if (driveController.getBButton()) {
             align();
         } else {
             runTankDrive();
@@ -169,7 +171,7 @@ public class DriveTrain {
 
         if (invert) {
             constL *= -1;
-            constL *= -1;
+            constR *= -1;
         }
 
         // LB and RB are used to change the drivePower on the fly

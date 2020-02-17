@@ -72,6 +72,8 @@ public class Robot extends TimedRobot {
 
     drive = new DriveTrain(Constants.kDriveLeftPorts, Constants.kDriveRightPorts, Constants.kSparkMaxCurrent,
         Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, Constants.kInvert, driveController);
+    drive.enablePIDControl(0, 0, 0, 0.5, 0, 0);
+    drive.enableAlignment(0);
   }
 
   /**
