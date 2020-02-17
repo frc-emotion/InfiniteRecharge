@@ -32,6 +32,17 @@ public class Constants {
 
     // Flipper Constants
 
+    public static final int SCREW_TALON_L = 8;
+    public static final int SCREW_TALON_R = 7;
+    public static final double SCREW_SPEED = 0.4;
+
+    //solenoids
+    public static final int PISTONR_FWD = 4;
+    public static final int PISTRONR_BKWD = 5;
+    public static final int PISTONL_FWD = 6;
+    public static final int PISTONL_BKWD = 7;
+
+
     public static double WHEELBASE_WIDTH = 0.6898513;
     public static double WHEEL_DIAMETER = 0.1524;
     public static double MAX_VELOCITY = 2;
@@ -40,6 +51,8 @@ public class Constants {
     public static final int ENCODER_REV = 42;// temporary
 
     public static final int WHEEL_REV = 7;
+
+
 
     /**
      * Motor Defaults
