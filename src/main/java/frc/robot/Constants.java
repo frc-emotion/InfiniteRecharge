@@ -39,7 +39,6 @@ public class Constants {
      */
 
     static final int kPivotLowerLimitPort = 0;
-    static final int kPivotUpperLimitPort = 1;
 
     /**
      * LimeLight Pipelines
@@ -125,14 +124,15 @@ public class Constants {
     static final double kSlowPower = 0.4;
     static final double kRegularPower = 0.7;
     static final double kTurboPower = 0.99;
-    static final boolean kInvert = false; // default value
 
     /**
      * DriveTrain PID Constants
      */
-    static final double kPDrive = 1;
-    static final double kIDrive = 0;
-    static final double kDDrive = 0;
+    static final float kPDrive = 1;
+    static final float kIDrive = 0;
+    static final float kDDrive = 0;
+    static final double kDriveTolerance = 0.2;
+    static final double kDriveRotation = 0.2;
 
     /**
      * Pose2d Constants All Pose2d should be relative to one Pose2d (Currently

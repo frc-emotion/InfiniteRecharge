@@ -11,11 +11,12 @@ class Alignment {
     private double velocity;
     private double maxDisplacement;
 
-    Alignment(Distance distance, LimeLight limeLight, int pipeline, double velocity) {
+    Alignment(Distance distance, double velocity, int pipeline) {
         this.distance = distance;
-        this.limeLight = limeLight;
         this.pipeline = pipeline;
         this.velocity = velocity;
+
+        limeLight = new LimeLight();
 
         maxDisplacement = getDistance(Math.atan(Math.pow(velocity, 2) / 9.81));
     }

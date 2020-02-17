@@ -64,9 +64,6 @@ public class Shooter {
 
     private boolean activated; // Flag for whether spinUp was triggered this cycle
 
-    private double waitTime; // Constant for how long to wait before shooting again
-    private double prevTime; // Previous time the ball was shot
-
     private Pivot pivot;
 
     public Shooter(int[] ports, int forwardChannel, int reverseChannel, int maxCurrent, double targetRPM,
@@ -277,15 +274,10 @@ public class Shooter {
     public void shoot() {
         spinUp();
         pivot.setAngle();
-        
 
-        if (prevTime == 0) {
-            prevTime = System.currentTimeMillis();
-        }
-
-        if (atTargetRPM() && pivot.isInRange() && System.currentTimeMillis() - prevTime > waitTime) {
+        // pivot.isInRange()
+        if (atTargetRPM()) {
             hook.set(DoubleSolenoid.Value.kForward);
-            prevTime = System.currentTimeMillis();
         }
 
         hook.set(DoubleSolenoid.Value.kReverse);

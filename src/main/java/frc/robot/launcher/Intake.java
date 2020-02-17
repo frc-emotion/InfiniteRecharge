@@ -62,7 +62,8 @@ public class Intake {
             intakeUp();
         }
 
-        if (operatorController.getBumper(Hand.kLeft) || operatorController.getTriggerAxis(Hand.kRight) >= threshold) {
+        if (operatorController.getBumper(Hand.kLeft) || operatorController.getTriggerAxis(Hand.kRight) >= threshold
+                || operatorController.getTriggerAxis(Hand.kLeft) >= threshold) {
             tubeIntake();
         } else {
             tubeOff();

@@ -21,8 +21,8 @@ public class Pivot {
 
     private Alignment alignment;
 
-    public Pivot(int motorPort, int maxCurrent, int lowerLimitPort, double teleopConstant,
-            double callibrateSpeed, double revToAngle, double controllerThreshold, double angleThreshold, double maxAngle,
+    public Pivot(int motorPort, int maxCurrent, int lowerLimitPort, double teleopConstant, double callibrateSpeed,
+            double revToAngle, double controllerThreshold, double angleThreshold, double maxAngle,
             XboxController operatorController) {
         screwMotor = new CANSparkMax(motorPort, MotorType.kBrushless);
 
@@ -31,7 +31,6 @@ public class Pivot {
         screwMotor.setIdleMode(IdleMode.kBrake);
 
         lowerLimit = new DigitalInput(lowerLimitPort);
-
 
         this.operatorController = operatorController;
         this.teleopConstant = teleopConstant;
@@ -44,14 +43,28 @@ public class Pivot {
         setAngle = 0;
     }
 
+    public void enablePID(double kP, double kI, double kD) {
+        screwMotor.getPIDController().setP(kP);
+        screwMotor.getPIDController().setI(kI);
+        screwMotor.getPIDController().setD(kD);
+    }
+
+    public void enablePID(double kP, double kI) {
+        enablePID(kP, kI, 0);
+    }
+
+    public void enablePID(double kP) {
+        enablePID(kP, 0);
+    }
+
     public void enableAlignment(double mountingHeight, double mountingAngle, double refrenceHeight, int pipeline,
             double maxVelocity) {
-        this.alignment = new Alignment(new Distance(mountingHeight, mountingAngle, refrenceHeight), new LimeLight(),
-                pipeline, maxVelocity);
+        this.alignment = new Alignment(new Distance(mountingHeight, mountingAngle, refrenceHeight), maxVelocity,
+                pipeline);
     }
 
     public void callibrate() {
-        if (lowerLimit.get()) {
+        if (!lowerLimit.get()) {
             screwMotor.set(0);
             screwMotor.getEncoder().setPosition(0);
         } else {
@@ -68,19 +81,12 @@ public class Pivot {
     }
 
     public void run() {
-        /**
-         * if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
-            setAngle(setAngle + operatorController.getY(Hand.kLeft) * teleopConstant); // y' = y + kx
+        if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
+            setAngle(setAngle + operatorController.getY(Hand.kLeft) * teleopConstant);
         } else if (operatorController.getBButton()) {
             setAngle();
-        }
-         */
-        if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
-            screwMotor.set(operatorController.getY(Hand.kLeft) * teleopConstant);
-        } else if (operatorController.getBButton()) {
+        } else if (operatorController.getXButton()) {
             callibrate();
-        } else {
-            screwMotor.set(0);
         }
     }
 

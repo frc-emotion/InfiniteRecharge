@@ -62,18 +62,21 @@ public class Robot extends TimedRobot {
 
     shooterSelector.close();
 
-    shooter.enablePivot(Constants.kPivotPort, Constants.kSparkMaxCurrent, Constants.kPivotLowerLimitPort, Constants.kTeleopConstant, Constants.kCallibrateSpeed, Constants.kRevToAngle,
+    shooter.enablePivot(Constants.kPivotPort, Constants.kSparkMaxCurrent, Constants.kPivotLowerLimitPort,
+        Constants.kTeleopConstant, Constants.kCallibrateSpeed, Constants.kRevToAngle,
         Constants.kPivotControllerThreshold, Constants.kPivotAngleThreshold, Constants.kPivotMaxAngle,
         Constants.kMountingHeight, Constants.kMountingAngle, Constants.kRefrenceHeight, Constants.kPortPipeline,
         Constants.kShooterMaxVelocity);
 
-    intake = new Intake(Constants.kIntakePorts, Constants.kSparkMaxCurrent, Constants.kIntakeForwardPort, Constants.kIntakeReversePort, Constants.kIntakeOutput,
-        Constants.kTubeOutput, Constants.kIntakeThreshold, operatorController);
+    intake = new Intake(Constants.kIntakePorts, Constants.kSparkMaxCurrent, Constants.kIntakeForwardPort,
+        Constants.kIntakeReversePort, Constants.kIntakeOutput, Constants.kTubeOutput, Constants.kIntakeThreshold,
+        operatorController);
 
     drive = new DriveTrain(Constants.kDriveLeftPorts, Constants.kDriveRightPorts, Constants.kSparkMaxCurrent,
-        Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, Constants.kInvert, driveController);
-    drive.enablePIDControl(0, 0, 0, 0.5, 0, 0);
-    drive.enableAlignment(0);
+        Constants.kSlowPower, Constants.kRegularPower, Constants.kTurboPower, driveController);
+    drive.enablePIDControl(Constants.kPDrive, Constants.kIDrive, Constants.kDDrive, Constants.kDriveTolerance,
+        Constants.kDriveRotation);
+    drive.enableAlignment(Constants.kPortPipeline);
   }
 
   /**

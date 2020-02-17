@@ -46,10 +46,9 @@ public class DriveTrain {
     private Alignment alignment;
 
     private PIDControl pidControl;
-    private double maxSpeed;
 
     public DriveTrain(int[] leftPorts, int[] rightPorts, int maxCurrent, double slowPower, double regularPower,
-            double turboPower, boolean invert, XboxController driveController) {
+            double turboPower, XboxController driveController) {
         // 3 Ports for each side
         if (leftPorts.length != 3 || rightPorts.length != 3) {
             return;
@@ -91,16 +90,14 @@ public class DriveTrain {
         this.slowPower = slowPower;
         this.regularPower = regularPower;
         this.turboPower = turboPower;
-        this.invert = invert;
+        this.invert = false;
     }
 
-    public void enablePIDControl(float kP, float kI, float kD, double tolerance, double maxSpeed, double maxRotation) {
+    public void enablePIDControl(float kP, float kI, float kD, double tolerance, double maxRotation) {
         pidControl = new PIDControl(kP, kI, kD);
 
         pidControl.setTolerance(tolerance);
         pidControl.setMaxSpeed(maxRotation);
-
-        this.maxSpeed = maxSpeed;
     }
 
     public void enableAlignment(int pipeline) {
@@ -109,20 +106,9 @@ public class DriveTrain {
 
     public void align() {
         if (alignment.targetFound()) {
-            drive.arcadeDrive(maxSpeed, pidControl.getValue(0, alignment.getError()));
-            driveController.setRumble(RumbleType.kLeftRumble, 0.3);
-            driveController.setRumble(RumbleType.kRightRumble, 0.3);
-        } else {
-            driveController.setRumble(RumbleType.kLeftRumble, 0.7);
-            driveController.setRumble(RumbleType.kRightRumble, 0.7);
+            drive.arcadeDrive(0, pidControl.getValue(0, alignment.getError()));
         }
     }
-
-    private void reset() {
-        driveController.setRumble(RumbleType.kLeftRumble, 0);
-        driveController.setRumble(RumbleType.kRightRumble, 0);
-    }
-
     /**
      * Function that should be called by teleopPeriodic
      */
@@ -138,7 +124,6 @@ public class DriveTrain {
             runTankDrive();
         }
 
-        reset();
         dashboardRun();
     }
 
