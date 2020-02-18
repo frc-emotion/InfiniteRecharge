@@ -22,6 +22,8 @@ public class Intake {
     private double intakeOutput;
     private double threshold;
 
+    private boolean intake;
+
     public Intake(int[] ports, int maxCurrent, int forwardPort, int reversePort, double intakeOutput, double tubeOutput,
             double threshold, XboxController operatorController) {
         if (ports.length != 4) {
@@ -53,24 +55,33 @@ public class Intake {
         this.tubeOutput = tubeOutput;
         this.intakeOutput = intakeOutput;
         this.threshold = threshold;
+        intake = false;
     }
 
     public void run() {
-        if (operatorController.getAButton()) {
+        if (operatorController.getAButtonPressed()) {
+            intake = !intake;
+        }
+
+        if (intake) {
             intakeDown();
         } else {
             intakeUp();
         }
 
-        if (operatorController.getBumper(Hand.kLeft) || operatorController.getTriggerAxis(Hand.kRight) >= threshold
-                || operatorController.getTriggerAxis(Hand.kLeft) >= threshold) {
+        if (operatorController.getBumper(Hand.kLeft) || operatorController.getTriggerAxis(Hand.kLeft) >= threshold) {
             tubeIntake();
+        } else if (operatorController.getTriggerAxis(Hand.kRight) >= threshold) {
+            sparkC.set(1);
+            sparkD.set(-1);
         } else {
             tubeOff();
         }
 
         if (operatorController.getTriggerAxis(Hand.kLeft) >= threshold) {
             intake();
+        } else if (operatorController.getBumper(Hand.kRight)){
+            intakeReverse();
         } else {
             intakeOff();
         }
@@ -104,6 +115,12 @@ public class Intake {
         sparkB.set(constb * intakeOutput);
     }
 
+    public void intakeReverse() {
+        int consta = -1, constb = 1;
+
+        sparkA.set(-1 * consta * intakeOutput);
+        sparkB.set(-1 * constb * intakeOutput);
+    }
     public void intakeOff() {
         sparkA.set(0);
         sparkB.set(0);

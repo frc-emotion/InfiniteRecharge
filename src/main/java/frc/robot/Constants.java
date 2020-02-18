@@ -29,9 +29,9 @@ public class Constants {
     /**
      * Pneumatics Ports
      */
-    static final int kShooterForwardPort = 0;
-    static final int kShooterReversePort = 1;
-    static final int kIntakeForwardPort = 2;
+    static final int kShooterForwardPort = 1;
+    static final int kShooterReversePort = 2;
+    static final int kIntakeForwardPort = 0;
     static final int kIntakeReversePort = 3;
 
     /**
@@ -81,13 +81,17 @@ public class Constants {
     static final double kPivotAngleThreshold = 5;
     static final double kPivotMaxAngle = 20;
 
+    static final float kPivotP = 1;
+    static final float kPivotI = 0;
+    static final float kPivotD = 0;
+
     /**
      * Intake Constants 
      */
 
      static final double kIntakeThreshold = 0.3;
      static final double kIntakeOutput = 0.3;
-     static final double kTubeOutput = 0.7;
+     static final double kTubeOutput = 0.5;
 
     /**
      * Shooter General Constants

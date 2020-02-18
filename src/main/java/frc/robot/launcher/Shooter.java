@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -60,7 +61,6 @@ public class Shooter {
     private float kI, kD; // Constants for PID Controller
 
     private double output; // Variable for spinUp
-    private boolean inRange; // Flag for whether the the targetRPM is reached
 
     private boolean activated; // Flag for whether spinUp was triggered this cycle
 
@@ -88,7 +88,7 @@ public class Shooter {
         for (CANSparkMax spark : shooterSparkMax) {
             spark.setSmartCurrentLimit(maxCurrent);
             spark.setSecondaryCurrentLimit(maxCurrent);
-            spark.setIdleMode(IdleMode.kBrake); // IdleMode will be changed dynamically
+            spark.setIdleMode(IdleMode.kCoast);
         }
 
         sparkEncoder = sparkA.getEncoder();
@@ -98,7 +98,6 @@ public class Shooter {
         // Store variables
         this.shooterController = shooterController;
         this.targetRPM = targetRPM;
-        this.waitTime = waitTime;
         this.thresholdRPM = thresholdRPM;
         this.thresholdTrigger = thresholdTrigger;
         this.maxOutput = maxOutput;
@@ -119,35 +118,6 @@ public class Shooter {
                 controllerThreshold, angleThreshold, maxAngle, shooterController);
         pivot.enableAlignment(mountingHeight, mountingAngle, refrenceHeight, pipeline, maxVelocity);
 
-    }
-
-    /**
-     * Returns whether the target speed is acquired
-     * 
-     * @return boolean if in range
-     */
-    public boolean isInRange() {
-        return inRange;
-    }
-
-    /**
-     * Sets both motors to IdleMode.kCoast
-     */
-    private void setCoastMode() {
-        if (sparkA.getIdleMode() != IdleMode.kCoast) {
-            sparkA.setIdleMode(IdleMode.kCoast);
-            sparkB.setIdleMode(IdleMode.kCoast);
-        }
-    }
-
-    /**
-     * Sets both motors to IdleMode.kBrake
-     */
-    private void setBrakeMode() {
-        if (sparkA.getIdleMode() != IdleMode.kBrake) {
-            sparkA.setIdleMode(IdleMode.kBrake);
-            sparkB.setIdleMode(IdleMode.kBrake);
-        }
     }
 
     /**
@@ -236,10 +206,9 @@ public class Shooter {
         if (shooterController.getTriggerAxis(Hand.kRight) >= thresholdTrigger) {
             shoot();
         } else {
-            pivot.run();
+            //pivot.run();
             spinDown();
-            prevTime = 0;
-            hook.set(DoubleSolenoid.Value.kReverse);
+            hook.set(Value.kForward);
         }
 
         dashboardRun();
@@ -253,7 +222,6 @@ public class Shooter {
         currentRPM = sparkEncoder.getVelocity();
         output = 0;
         activated = false;
-        inRange = atTargetRPM();
     }
 
     /**
@@ -264,7 +232,7 @@ public class Shooter {
     public void dashboardRun() {
         SmartDashboard.putNumber("ShooterRPM", currentRPM);
         SmartDashboard.putNumber("ShooterOutput", output);
-        SmartDashboard.putBoolean("ShooterVelocityInRange", inRange);
+        SmartDashboard.putBoolean("ShooterVelocityInRange", atTargetRPM());
         SmartDashboard.putBoolean("ShooterActivated", activated);
     }
 
@@ -273,21 +241,15 @@ public class Shooter {
      */
     public void shoot() {
         spinUp();
-        pivot.setAngle();
+        //pivot.setAngle();
 
-        // pivot.isInRange()
-        if (atTargetRPM()) {
-            hook.set(DoubleSolenoid.Value.kForward);
-        }
-
-        hook.set(DoubleSolenoid.Value.kReverse);
+        hook.set(Value.kReverse);
     }
 
     /**
      * Function called by run or autonomousPeriodic periodically to set motor speeds
      */
     public void spinUp() {
-        setCoastMode();
         if (pidController) {
             output = runPIDController();
         } else if (twoStepController) {
@@ -304,7 +266,6 @@ public class Shooter {
     public void spinDown() {
         sparkA.set(0);
         sparkB.set(0);
-        setBrakeMode();
     }
 
     /**
@@ -313,7 +274,6 @@ public class Shooter {
      * @return output double value that shooterGroup will be set to
      */
     private double runPIDController() {
-        sparkA.pidWrite(targetRPM);
         return sparkA.get();
     }
 
@@ -323,14 +283,17 @@ public class Shooter {
      * @return output double value that shooterGroup will be set to
      */
     private double runTwoStepController() {
-        // Might remove if not necessary. Just incase if the currentRPM exceeds
+        return 1;
+        /**
+         * // Might remove if not necessary. Just incase if the currentRPM exceeds
         // targetRPM before the motor is stopped.
         if (targetRPM - currentRPM < 0) {
             return minOutput;
         }
-        if (inRange) {
+        if (atTargetRPM()) {
             return minOutput;
         }
         return maxOutput;
+         */
     }
 }

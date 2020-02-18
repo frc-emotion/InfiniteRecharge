@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.PIDControl;
@@ -122,6 +121,7 @@ public class DriveTrain {
             align();
         } else {
             runTankDrive();
+            pidControl.cleanup();
         }
 
         dashboardRun();
@@ -152,13 +152,6 @@ public class DriveTrain {
             constL *= -1;
         }
 
-        // Check if controls inverted
-
-        if (invert) {
-            constL *= -1;
-            constR *= -1;
-        }
-
         // LB and RB are used to change the drivePower on the fly
         double drivePower = regularPower;
         if (driveController.getBumper(Hand.kLeft))
@@ -173,9 +166,14 @@ public class DriveTrain {
         // high maximum speed
         double driveL = constL * drivePower * Math.pow(Math.abs(lAxis), driveExponent);
         double driveR = constR * drivePower * Math.pow(Math.abs(rAxis), driveExponent);
-
+    
         // Our drivers prefer tankDrive
-        drive.tankDrive(driveL, driveR);
+        // invert will switch R and L
+        if (invert) {
+            drive.tankDrive(-driveR, -driveL);
+        } else {
+            drive.tankDrive(driveL, driveR);
+        }
     }
 
     /**

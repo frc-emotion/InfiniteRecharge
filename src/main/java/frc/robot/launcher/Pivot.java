@@ -16,7 +16,7 @@ public class Pivot {
     private CANSparkMax screwMotor;
     private DigitalInput lowerLimit;
 
-    private double controllerThreshold, angleThreshold, maxAngle, revToAngle, setAngle, callibrateSpeed;
+    private double controllerThreshold, angleThreshold, maxAngle, revToAngle, refrenceAngle, callibrateSpeed;
     private double teleopConstant;
 
     private Alignment alignment;
@@ -40,13 +40,15 @@ public class Pivot {
         this.maxAngle = maxAngle;
         this.revToAngle = revToAngle;
 
-        setAngle = 0;
+        refrenceAngle = getAngle();
     }
 
     public void enablePID(double kP, double kI, double kD) {
         screwMotor.getPIDController().setP(kP);
         screwMotor.getPIDController().setI(kI);
         screwMotor.getPIDController().setD(kD);
+
+        screwMotor.getPIDController().setOutputRange(-0.2, 0.2);
     }
 
     public void enablePID(double kP, double kI) {
@@ -67,6 +69,7 @@ public class Pivot {
         if (!lowerLimit.get()) {
             screwMotor.set(0);
             screwMotor.getEncoder().setPosition(0);
+            refrenceAngle = getAngle();
         } else {
             screwMotor.set(callibrateSpeed);
         }
@@ -77,20 +80,23 @@ public class Pivot {
     }
 
     public boolean isInRange() {
-        return Math.abs(getAngle() - setAngle) < angleThreshold;
+        return Math.abs(getAngle() - refrenceAngle) < angleThreshold;
     }
 
     public void run() {
+        //if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
+        //    refrenceAngle = refrenceAngle + operatorController.getY(Hand.kLeft) * teleopConstant;
+        //}
         if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
-            setAngle(setAngle + operatorController.getY(Hand.kLeft) * teleopConstant);
+            screwMotor.set(operatorController.getY(Hand.kLeft) * teleopConstant);
         } else if (operatorController.getBButton()) {
-            setAngle();
+            align();
         } else if (operatorController.getXButton()) {
             callibrate();
         }
     }
 
-    public void setAngle() {
+    public void align() {
         if (alignment.getAngle() == -1) {
             return;
         }
@@ -104,15 +110,18 @@ public class Pivot {
             angle = 0;
         }
 
-        if (lowerLimit.get() && angle <= screwMotor.getEncoder().getPosition() * revToAngle) {
+        if (!lowerLimit.get() && angle <= screwMotor.getEncoder().getPosition() * revToAngle) {
             if (getAngle() != 0) {
                 callibrate();
             }
 
             screwMotor.set(0);
         } else {
-            setAngle = angle;
             screwMotor.getPIDController().setReference(angle / revToAngle, ControlType.kPosition);
         }
+    }
+
+    public void setAngle() {
+        setAngle(refrenceAngle);
     }
 }
