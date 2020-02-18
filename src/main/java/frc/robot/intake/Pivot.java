@@ -9,8 +9,4 @@ class Pivot {
 
         this.operatorController = operatorController;
     }
-
-    GetLocation() {
-        
-    }
 }

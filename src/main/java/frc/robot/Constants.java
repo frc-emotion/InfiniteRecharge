@@ -20,11 +20,16 @@ public class Constants {
     /**
      * CANBUS Ports
      */
-    static final int[] kShooterPorts = { 0, 1 };
-    static final int kShooterForwardPort = 2;
-    static final int kShooterReversePort = 3;
+    static final int[] kShooterPorts = { 1, 2 };
     static final int[] kDriveLeftPorts = { 3, 4, 5 };
-    static final int[] kDriveRightPorts = { 9, 10, 11 };
+    static final int[] kDriveRightPorts = { 6, 9, 10 };
+    static final int kPivotPort = 11;
+    static final int[] kIntakePorts = { 12, 13, 14, 15 };
+
+    static final int kShooterForwardPort = 1;
+    static final int kShooterReversePort = 2;
+    static final int kIntakeForwardPort = 0;
+    static final int kIntakeReversePort = 3;
 
     /**
      * Robot Constants

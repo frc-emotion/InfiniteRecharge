@@ -128,7 +128,8 @@ public class DriveTrain {
     }
     
     public void run() {
-        int driveChoice = driveChoices.getSelected();
+        //int driveChoice = driveChoices.getSelected();
+        int driveChoice = 0;
         switch (driveChoice) {
         case 0:
             // Lets worry about this after drive train works
@@ -156,12 +157,12 @@ public class DriveTrain {
     }
 
     public void runPathFinder() {
-        int pathChoice = pathChoices.getSelected().intValue();
+        //int pathChoice = pathChoices.getSelected().intValue();
         String pathName = "";
-
+        int pathChoice = 0;
         switch (pathChoice) {
         case 0:
-            pathName = "righthab";
+            pathName = "RS1-B2";
             break;
         case 1:
             pathName = "straighthab";
@@ -182,7 +183,7 @@ public class DriveTrain {
 
         if (!pathName.equals("")) {
             String dir = Filesystem.getDeployDirectory().toString();
-            String fileName = pathName + ".pf1.csv";
+            String fileName = pathName + ".wpilib.csv";
 
             File trajFile = new File(dir + "/" + fileName);
 
