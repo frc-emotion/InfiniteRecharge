@@ -65,6 +65,9 @@ public class DriveTrain {
 
     public DriveTrain(int[] leftPorts, int[] rightPorts, int maxCurrent, double slowPower, double regularPower,
             double turboPower, XboxController driveController) {
+        driveChoices = new SendableChooser<Integer>();
+        pathChoices = new SendableChooser<Integer>();
+
         pathDone = false;
         // 3 Ports for each side
         if (leftPorts.length != 3 || rightPorts.length != 3) {
@@ -150,7 +153,12 @@ public class DriveTrain {
      * Function that should be called by teleopPeriodic
      */
     public void run() {
+        driveChoices.addOption("pathfinder", 0);
+        driveChoices.addOption("arcade", 1);
+        driveChoices.addDefault("regular", 2);
         int driveChoice = driveChoices.getSelected();
+        // temp
+        driveChoice = 0;
         switch (driveChoice) {
             case 0:
                 // Lets worry about this after drive train works
@@ -185,12 +193,15 @@ public class DriveTrain {
     }
 
     public void runPathFinder() {
+        pathChoices.addDefault("RS1-B2", 0);
+
         int pathChoice = pathChoices.getSelected().intValue();
+        
         String pathName = "";
 
         switch (pathChoice) {
         case 0:
-            pathName = "righthab";
+            pathName = "RS1-B2";
             break;
         case 1:
             pathName = "straighthab";
@@ -211,7 +222,7 @@ public class DriveTrain {
 
         if (!pathName.equals("")) {
             String dir = Filesystem.getDeployDirectory().toString();
-            String fileName = pathName + ".pf1.csv";
+            String fileName = pathName + ".wpilib.csv";
 
             File trajFile = new File(dir + "/" + fileName);
 

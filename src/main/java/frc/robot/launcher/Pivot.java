@@ -90,11 +90,8 @@ public class Pivot {
     public void run() {
         if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
             screwMotor.set(operatorController.getY(Hand.kLeft) * teleopConstant);
-            refrenceAngle = refrenceAngle + operatorController.getY(Hand.kLeft) * teleopConstant;
-        } else if (operatorController.getBButton()) {
-            align();
-        } else if (operatorController.getXButton()) {
-            callibrate();
+        } else {
+            screwMotor.set(0);
         }
 
         SmartDashboard.putNumber("refrenceAngle", refrenceAngle);

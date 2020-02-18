@@ -65,6 +65,8 @@ public class Shooter {
 
     private Pivot pivot;
 
+    private double prevTime;
+
     public Shooter(int[] ports, int forwardChannel, int reverseChannel, int maxCurrent, double targetRPM,
             double waitTime, double thresholdRPM, double thresholdTrigger, double maxOutput,
             XboxController shooterController) {
@@ -107,6 +109,7 @@ public class Shooter {
         currentRPM = 0;
         minOutput = 0;
         kI = kD = 0;
+        prevTime = 0;
     }
 
     public void enablePivot(int motorPort, int maxCurrent, int lowerLimitPort, double teleopConstant,
@@ -203,9 +206,10 @@ public class Shooter {
         if (shooterController.getTriggerAxis(Hand.kRight) >= thresholdTrigger) {
             shoot();
         } else {
-            // pivot.run();
+            pivot.run();
             spinDown();
             hook.set(Value.kForward);
+            prevTime = 0;
         }
 
         dashboardRun();
@@ -239,8 +243,12 @@ public class Shooter {
     public void shoot() {
         spinUp();
         // pivot.setAngle();
-
-        hook.set(Value.kReverse);
+        if (prevTime == 0) {
+            prevTime = System.currentTimeMillis();
+        }
+        if (System.currentTimeMillis() - prevTime > 350) {
+            hook.set(Value.kReverse);
+        }
     }
 
     /**
