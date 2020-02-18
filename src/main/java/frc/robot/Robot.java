@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.SerialPort.Port;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  public XboxController operatorController;
-  public XboxController driveController;
+  public static XboxController operatorController;
+  public static XboxController driveController;
 
   public static AHRS gyro;
 
@@ -40,6 +40,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    gyro = new AHRS(Port.kUSB);
+
     operatorController = new XboxController(Constants.kOperatorPort);
     driveController = new XboxController(Constants.kDrivePort);
     gyro = new AHRS(Constants.kGyroPort);
@@ -133,6 +135,10 @@ public class Robot extends TimedRobot {
     shooter.run();
     drive.run();
     intake.run();
+  }
+
+  public void updateSmartDashboard() {
+    SmartDashboard.putNumber("Nav-X Angle", gyro.getAngle());
   }
 
   /**

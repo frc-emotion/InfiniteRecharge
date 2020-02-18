@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -108,62 +110,6 @@ public class DriveTrain {
         this.invert = false;
     }
 
-    /**
-     * Function that should be called by teleopPeriodic
-     */
-
-    private void runPathFinderChoices() {
-        if (!pathDone) {
-            runPathFinder();
-            pathDone = true;
-        }
-        if (pathConverter.isDriveAllowed())
-            runTankDrive();
-    }
-
-    public void runPathFinder() {
-        int pathChoice = pathChoices.getSelected().intValue();
-        String pathName = "";
-
-        switch (pathChoice) {
-            case 0:
-                pathName = "righthab";
-                break;
-            case 1:
-                pathName = "straighthab";
-                break;
-            case 2:
-                Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-                        Trajectory.Config.SAMPLES_HIGH, 0.02, 0.4, 0.8, 5.0);
-                Trajectory trajectory = Pathfinder.generate(PathTrajectories.rightHab, config);
-
-                pathConverter = new PathConverter(this, driveController, trajectory);
-                pathConverter.setUpFollowers();
-                pathConverter.followPath();
-                break;
-            default:
-                // do nothing
-                break;
-        }
-
-        if (!pathName.equals("")) {
-            String dir = Filesystem.getDeployDirectory().toString();
-            String fileName = pathName + ".pf1.csv";
-
-            File trajFile = new File(dir + "/" + fileName);
-
-            Trajectory traj = null;
-            try {
-                traj = Pathfinder.readFromCSV(trajFile);
-                pathConverter = new PathConverter(this, driveController, traj);
-                pathConverter.setUpFollowers();
-                pathConverter.followPath();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     void runArcadeDrive() {
         // arcade drive (one stick) with square inputs
         drive.arcadeDrive(driveController.getY(Hand.kLeft), driveController.getX(Hand.kLeft), true);
@@ -229,9 +175,58 @@ public class DriveTrain {
         dashboardRun();
     }
 
-    /**
-     * Function that sets the speeds for the DifferentialDrive object periodically
-     */
+    private void runPathFinderChoices() {
+        if (!pathDone) {
+            runPathFinder();
+            pathDone = true;
+        }
+        if (pathConverter.isDriveAllowed())
+            runTankDrive();
+    }
+
+    public void runPathFinder() {
+        int pathChoice = pathChoices.getSelected().intValue();
+        String pathName = "";
+
+        switch (pathChoice) {
+        case 0:
+            pathName = "righthab";
+            break;
+        case 1:
+            pathName = "straighthab";
+            break;
+        case 2:
+            Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+                    Trajectory.Config.SAMPLES_HIGH, 0.02, 0.4, 0.8, 5.0);
+            Trajectory trajectory = Pathfinder.generate(PathTrajectories.rightHab, config);
+
+            pathConverter = new PathConverter(this, driveController, trajectory);
+            pathConverter.setUpFollowers();
+            pathConverter.followPath();
+            break;
+        default:
+            // do nothing
+            break;
+        }
+
+        if (!pathName.equals("")) {
+            String dir = Filesystem.getDeployDirectory().toString();
+            String fileName = pathName + ".pf1.csv";
+
+            File trajFile = new File(dir + "/" + fileName);
+
+            Trajectory traj = null;
+            try {
+                traj = Pathfinder.readFromCSV(trajFile);
+                pathConverter = new PathConverter(this, driveController, traj);
+                pathConverter.setUpFollowers();
+                pathConverter.followPath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void runTankDrive() {
         // constants to easily configure if drive is opposite
         int constR = 1, constL = 1;

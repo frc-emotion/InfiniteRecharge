@@ -42,21 +42,33 @@ public class PathConverter {
 
     private CANEncoder rEnc, lEnc;
 
+<<<<<<< HEAD
     public PathConverter(DriveTrain driveTrain, XboxController driveController, Trajectory traj) {
+=======
+    public PathConverter(DriveTrain driveTrain, Trajectory traj) {
+>>>>>>> 10e9ac9fc1a6a91807c32b8f7fa31ac391da9732
         allowDrive = true;
         this.driveTrain = driveTrain;
         this.traj = traj;
 
+<<<<<<< HEAD
         rEnc = driveTrain.getEncoder('r');
         lEnc = driveTrain.getEncoder('l');
+=======
+        rEnc = driveTrain.getDriveEncoder('r');
+        lEnc = driveTrain.getDriveEncoder('l');
+>>>>>>> 10e9ac9fc1a6a91807c32b8f7fa31ac391da9732
 
         // modify to our robot tank width
         modifier = new TankModifier(traj).modify(Constants.WHEELBASE_WIDTH);
 
         lFollower = new EncoderFollower();
         rFollower = new EncoderFollower();
+<<<<<<< HEAD
 
         this.driveController = driveController;
+=======
+>>>>>>> 10e9ac9fc1a6a91807c32b8f7fa31ac391da9732
     }
 
     /**
@@ -66,7 +78,11 @@ public class PathConverter {
         setUpFollowers(Constants.WHEEL_REV, Constants.WHEEL_DIAMETER);
     }
 
+<<<<<<< HEAD
     /**
+=======
+    /** 
+>>>>>>> 10e9ac9fc1a6a91807c32b8f7fa31ac391da9732
      * Sets up encoder followers
      * 
      * @param ticksInRev encoder ticks in a revolution
@@ -111,17 +127,29 @@ public class PathConverter {
     private void followPathHelper() {
         // stop notifier when it is finished, or when movement detected from controllers
         if ((lFollower.isFinished() || rFollower.isFinished()) || checkControllers()) {
+<<<<<<< HEAD
             // driveController.setRumble(RumbleType.kLeftRumble, 0.5);
             // driveController.setRumble(RumbleType.kRightRumble, 0.5);
+=======
+            //Robot.driveController.setRumble(RumbleType.kLeftRumble, 0.5);
+           // Robot.driveController.setRumble(RumbleType.kRightRumble, 0.5);
+>>>>>>> 10e9ac9fc1a6a91807c32b8f7fa31ac391da9732
             SmartDashboard.putBoolean("Pathfinder Job", true);
             allowDrive = true;
             notifier.stop();
         } else {
             // pause the pathfinder
+<<<<<<< HEAD
             if (driveController.getBButtonPressed()) {
                 long prevTime = System.currentTimeMillis();
                 while ((System.currentTimeMillis() - prevTime) <= 4000) {
                     if (driveController.getBButtonPressed())
+=======
+            if (Robot.driveController.getBButtonPressed()) {
+                long prevTime = System.currentTimeMillis();
+                while ((System.currentTimeMillis() - prevTime) <= 4000) {
+                    if (Robot.driveController.getBButtonPressed())
+>>>>>>> 10e9ac9fc1a6a91807c32b8f7fa31ac391da9732
                         break;
                 }
             }
@@ -155,8 +183,13 @@ public class PathConverter {
      * @return true if the controller has been touched, false if not
      */
     private boolean checkControllers() {
+<<<<<<< HEAD
         return (driveController.getY(Hand.kLeft) > 0.3) || (driveController.getY(Hand.kLeft) < -0.3)
                 || (driveController.getY(Hand.kRight) > 0.3) || (driveController.getY(Hand.kRight) < -0.3);
+=======
+        return (Robot.driveController.getY(Hand.kLeft) > 0.3) || (Robot.driveController.getY(Hand.kLeft) < -0.3)
+                || (Robot.driveController.getY(Hand.kRight) > 0.3) || (Robot.driveController.getY(Hand.kRight) < -0.3);
+>>>>>>> 10e9ac9fc1a6a91807c32b8f7fa31ac391da9732
     }
 
     /**
@@ -194,12 +227,19 @@ public class PathConverter {
      */
     private void workShuffleBoard() {
         // SmartDashboard.putNumber("Right Drive Encoder Position", rEnc.getPosition());
+<<<<<<< HEAD
         // SmartDashboard.putNumber("Right Drive Encoder Velocity (rpm)",
         // rEnc.getVelocity());
 
         // SmartDashboard.putNumber("Left Drive Encoder Position", lEnc.getPosition());
         // SmartDashboard.putNumber("Left Drive Encoder Velocity (rpm)",
         // lEnc.getVelocity());
+=======
+        // SmartDashboard.putNumber("Right Drive Encoder Velocity (rpm)", rEnc.getVelocity());
+
+        // SmartDashboard.putNumber("Left Drive Encoder Position", lEnc.getPosition());
+        // SmartDashboard.putNumber("Left Drive Encoder Velocity (rpm)", lEnc.getVelocity());
+>>>>>>> 10e9ac9fc1a6a91807c32b8f7fa31ac391da9732
 
         SmartDashboard.putNumber("Nav-X Angle", Robot.gyro.getAngle());
     }
