@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-// ? Add feedbackPIDController if necessary
 /**
  * Class that runs the Shooting Mechanism
  * 
@@ -158,8 +157,6 @@ public class Shooter {
 
         sparkPIDController.setOutputRange(-maxOutput, maxOutput);
         sparkPIDController.setFeedbackDevice(sparkEncoder);
-
-        sparkPIDController.setReference(targetRPM, ControlType.kVelocity);
     }
 
     /**
@@ -206,7 +203,7 @@ public class Shooter {
         if (shooterController.getTriggerAxis(Hand.kRight) >= thresholdTrigger) {
             shoot();
         } else {
-            //pivot.run();
+            // pivot.run();
             spinDown();
             hook.set(Value.kForward);
         }
@@ -241,7 +238,7 @@ public class Shooter {
      */
     public void shoot() {
         spinUp();
-        //pivot.setAngle();
+        // pivot.setAngle();
 
         hook.set(Value.kReverse);
     }
@@ -274,6 +271,7 @@ public class Shooter {
      * @return output double value that shooterGroup will be set to
      */
     private double runPIDController() {
+        sparkA.getPIDController().setReference(targetRPM, ControlType.kVelocity);
         return sparkA.get();
     }
 
@@ -283,9 +281,7 @@ public class Shooter {
      * @return output double value that shooterGroup will be set to
      */
     private double runTwoStepController() {
-        return 1;
-        /**
-         * // Might remove if not necessary. Just incase if the currentRPM exceeds
+        // Might remove if not necessary. Just incase if the currentRPM exceeds
         // targetRPM before the motor is stopped.
         if (targetRPM - currentRPM < 0) {
             return minOutput;
@@ -294,6 +290,5 @@ public class Shooter {
             return minOutput;
         }
         return maxOutput;
-         */
     }
 }

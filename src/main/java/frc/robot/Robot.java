@@ -10,6 +10,7 @@ package frc.robot;
 import frc.robot.launcher.*;
 import frc.robot.drivetrain.*;
 
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,6 +27,8 @@ public class Robot extends TimedRobot {
   public XboxController operatorController;
   public XboxController driveController;
 
+  public static AHRS gyro;
+
   private Shooter shooter;
   private DriveTrain drive;
   private Intake intake;
@@ -39,6 +42,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     operatorController = new XboxController(Constants.kOperatorPort);
     driveController = new XboxController(Constants.kDrivePort);
+    gyro = new AHRS(Constants.kGyroPort);
 
     auto = new AutoOptions(Constants.kStartingLocations, Constants.kValidColors);
 
@@ -54,10 +58,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(shooterSelector);
 
     switch (shooterSelector.getSelected()) {
-    case Constants.kTwoStep:
-      shooter.enableTwoStepController(Constants.kShooterMinOutput);
-    case Constants.kPID:
-      shooter.enablePIDController(Constants.kPShooter, Constants.kIShooter, Constants.kDShooter);
+      case Constants.kTwoStep:
+        shooter.enableTwoStepController(Constants.kShooterMinOutput);
+      case Constants.kPID:
+        shooter.enablePIDController(Constants.kPShooter, Constants.kIShooter, Constants.kDShooter);
     }
 
     shooterSelector.close();

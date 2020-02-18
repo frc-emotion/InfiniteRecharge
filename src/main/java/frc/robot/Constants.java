@@ -44,7 +44,7 @@ public class Constants {
      * LimeLight Pipelines
      */
 
-     static final int kPortPipeline = 0;
+    static final int kPortPipeline = 0;
 
     /**
      * Robot Constants
@@ -61,9 +61,9 @@ public class Constants {
      * LimeLight Constants
      */
 
-     static final double kMountingHeight = 0.25;
-     static final double kMountingAngle = 20;
-     static final double kRefrenceHeight = 3.3;
+    static final double kMountingHeight = 0.25;
+    static final double kMountingAngle = 20;
+    static final double kRefrenceHeight = 3.3;
 
     /**
      * Motor Defaults
@@ -86,12 +86,12 @@ public class Constants {
     static final float kPivotD = 0;
 
     /**
-     * Intake Constants 
+     * Intake Constants
      */
 
-     static final double kIntakeThreshold = 0.3;
-     static final double kIntakeOutput = 0.3;
-     static final double kTubeOutput = 0.5;
+    static final double kIntakeThreshold = 0.3;
+    static final double kIntakeOutput = 0.3;
+    static final double kTubeOutput = 0.5;
 
     /**
      * Shooter General Constants
@@ -177,4 +177,29 @@ public class Constants {
             add('Y');
         }
     };
+
+    /**
+     * Robot Constants
+     */
+
+    // Flipper Constants
+
+    public static final int SCREW_TALON_L = 8;
+    public static final int SCREW_TALON_R = 7;
+    public static final double SCREW_SPEED = 0.4;
+
+    // solenoids
+    public static final int PISTONR_FWD = 4;
+    public static final int PISTRONR_BKWD = 5;
+    public static final int PISTONL_FWD = 6;
+    public static final int PISTONL_BKWD = 7;
+
+    public static double WHEELBASE_WIDTH = 0.6898513;
+    public static double WHEEL_DIAMETER = 0.1524;
+    public static double MAX_VELOCITY = 2;
+    static final double MAX_ACCELERATION = 0.5; // Not verified
+
+    public static final int ENCODER_REV = 42;// temporary
+
+    public static final int WHEEL_REV = 7;
 }

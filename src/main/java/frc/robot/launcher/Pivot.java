@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Pivot {
     private XboxController operatorController;
@@ -17,6 +18,7 @@ public class Pivot {
     private DigitalInput lowerLimit;
 
     private double controllerThreshold, angleThreshold, maxAngle, revToAngle, refrenceAngle, callibrateSpeed;
+    private double mountingAngle;
     private double teleopConstant;
 
     private Alignment alignment;
@@ -63,6 +65,8 @@ public class Pivot {
             double maxVelocity) {
         this.alignment = new Alignment(new Distance(mountingHeight, mountingAngle, refrenceHeight), maxVelocity,
                 pipeline);
+
+        this.mountingAngle = mountingAngle;
     }
 
     public void callibrate() {
@@ -84,23 +88,25 @@ public class Pivot {
     }
 
     public void run() {
-        //if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
-        //    refrenceAngle = refrenceAngle + operatorController.getY(Hand.kLeft) * teleopConstant;
-        //}
         if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
             screwMotor.set(operatorController.getY(Hand.kLeft) * teleopConstant);
+            refrenceAngle = refrenceAngle + operatorController.getY(Hand.kLeft) * teleopConstant;
         } else if (operatorController.getBButton()) {
             align();
         } else if (operatorController.getXButton()) {
             callibrate();
         }
+
+        SmartDashboard.putNumber("refrenceAngle", refrenceAngle);
+        SmartDashboard.putNumber("currentRevolution", screwMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("currentAngle", getAngle());
     }
 
     public void align() {
         if (alignment.getAngle() == -1) {
             return;
         }
-        setAngle(alignment.getAngle());
+        setAngle(alignment.getAngle() - mountingAngle);
     }
 
     public void setAngle(double angle) {

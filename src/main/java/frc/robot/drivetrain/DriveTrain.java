@@ -2,6 +2,7 @@ package frc.robot.drivetrain;
 
 import java.util.ArrayList;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -10,8 +11,18 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.PIDControl;
+import frc.robot.PathConverter;
+import frc.robot.PathTrajectories;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import edu.wpi.first.wpilibj.Filesystem;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Class that runs the drive train
@@ -46,8 +57,13 @@ public class DriveTrain {
 
     private PIDControl pidControl;
 
+    private SendableChooser<Integer> driveChoices, pathChoices;
+    private PathConverter pathConverter;
+    private boolean pathDone;
+
     public DriveTrain(int[] leftPorts, int[] rightPorts, int maxCurrent, double slowPower, double regularPower,
             double turboPower, XboxController driveController) {
+        pathDone = false;
         // 3 Ports for each side
         if (leftPorts.length != 3 || rightPorts.length != 3) {
             return;
@@ -92,6 +108,67 @@ public class DriveTrain {
         this.invert = false;
     }
 
+    /**
+     * Function that should be called by teleopPeriodic
+     */
+
+    private void runPathFinderChoices() {
+        if (!pathDone) {
+            runPathFinder();
+            pathDone = true;
+        }
+        if (pathConverter.isDriveAllowed())
+            runTankDrive();
+    }
+
+    public void runPathFinder() {
+        int pathChoice = pathChoices.getSelected().intValue();
+        String pathName = "";
+
+        switch (pathChoice) {
+            case 0:
+                pathName = "righthab";
+                break;
+            case 1:
+                pathName = "straighthab";
+                break;
+            case 2:
+                Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+                        Trajectory.Config.SAMPLES_HIGH, 0.02, 0.4, 0.8, 5.0);
+                Trajectory trajectory = Pathfinder.generate(PathTrajectories.rightHab, config);
+
+                pathConverter = new PathConverter(this, driveController, trajectory);
+                pathConverter.setUpFollowers();
+                pathConverter.followPath();
+                break;
+            default:
+                // do nothing
+                break;
+        }
+
+        if (!pathName.equals("")) {
+            String dir = Filesystem.getDeployDirectory().toString();
+            String fileName = pathName + ".pf1.csv";
+
+            File trajFile = new File(dir + "/" + fileName);
+
+            Trajectory traj = null;
+            try {
+                traj = Pathfinder.readFromCSV(trajFile);
+                pathConverter = new PathConverter(this, driveController, traj);
+                pathConverter.setUpFollowers();
+                pathConverter.followPath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    void runArcadeDrive() {
+        // arcade drive (one stick) with square inputs
+        drive.arcadeDrive(driveController.getY(Hand.kLeft), driveController.getX(Hand.kLeft), true);
+    }
+
     public void enablePIDControl(float kP, float kI, float kD, double tolerance, double maxRotation) {
         pidControl = new PIDControl(kP, kI, kD);
 
@@ -108,20 +185,45 @@ public class DriveTrain {
             drive.arcadeDrive(0, pidControl.getValue(0, alignment.getError()));
         }
     }
+
+    public CANEncoder getEncoder(char selector) {
+        switch (selector) {
+            case 'l':
+                return lsparkA.getEncoder();
+            case 'r':
+                return rsparkA.getEncoder();
+        }
+        return null;
+    }
+
+    public DifferentialDrive getDrive() {
+        return drive;
+    }
+
     /**
      * Function that should be called by teleopPeriodic
      */
     public void run() {
+        int driveChoice = driveChoices.getSelected();
+        switch (driveChoice) {
+            case 0:
+                // Lets worry about this after drive train works
+                runPathFinderChoices();
+                break;
+            case 1:
+                runArcadeDrive();
+            default:
+                if (driveController.getAButtonPressed()) {
+                    invert = !invert;
+                }
 
-        if (driveController.getAButtonPressed()) {
-            invert = !invert;
-        }
-
-        if (driveController.getBButton()) {
-            align();
-        } else {
-            runTankDrive();
-            pidControl.cleanup();
+                if (driveController.getBButton()) {
+                    align();
+                } else {
+                    runTankDrive();
+                    pidControl.cleanup();
+                }
+                break;
         }
 
         dashboardRun();
@@ -166,7 +268,7 @@ public class DriveTrain {
         // high maximum speed
         double driveL = constL * drivePower * Math.pow(Math.abs(lAxis), driveExponent);
         double driveR = constR * drivePower * Math.pow(Math.abs(rAxis), driveExponent);
-    
+
         // Our drivers prefer tankDrive
         // invert will switch R and L
         if (invert) {
