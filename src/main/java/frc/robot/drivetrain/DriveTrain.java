@@ -157,8 +157,7 @@ public class DriveTrain {
         driveChoices.addOption("arcade", 1);
         driveChoices.addDefault("regular", 2);
         int driveChoice = driveChoices.getSelected();
-        // temp
-        driveChoice = 0;
+
         switch (driveChoice) {
             case 0:
                 // Lets worry about this after drive train works

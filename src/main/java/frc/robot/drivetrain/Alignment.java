@@ -23,7 +23,7 @@ class Alignment {
 
     public double getError() {
         if (targetFound()) {
-            return limeLight.getTx();
+            return -limeLight.getTx();
         }
         return -1;
     }

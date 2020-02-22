@@ -1,6 +1,8 @@
 package frc.robot;
 // TODO: add sd support and inRange indicator
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * Custom PID controller class to make pid work! Configurable items: p, i, d,
  * scale, tolerance This class isn't for the most accurate pid in the world. Its
@@ -13,7 +15,7 @@ package frc.robot;
  */
 public class PIDControl {
     private float kP = 0, kI = 0, kD = 0; // tuning values
-    private double accumulator = 0, error = 0, scale = 1.0, output = 0, lastError = 0, currTime = 0; // modifiers for
+    private double accumulator = 0, error = 0, scale = 1.0, output = 0, lastError = 0, prevTime = 0; // modifiers for
                                                                                                      // pid
     private double tolerance = 1, maxSpeed = 1;;
     private boolean inRange = false;
@@ -122,8 +124,17 @@ public class PIDControl {
     public double getValue(double setpoint, double currentValue) {
         error = setpoint - currentValue;
         accumulator += error;
-        output = (error * kP + accumulator * kI) * scale;
+        
+        double slope = 0;
+        if (prevTime != 0) {
+            slope = (error - lastError)/(System.currentTimeMillis() - prevTime);
+        }
 
+        prevTime = System.currentTimeMillis();
+        lastError = error;
+        output = (error * kP + accumulator * kI + slope * kD) * scale;
+        SmartDashboard.putNumber("currentError", error);
+        SmartDashboard.putNumber("kdgain", slope * kD);
         if (Math.abs(output) < 0.02 && Math.abs(error) < (setpoint - setpoint * tolerance)) {
             inRange = true;
         } else {
@@ -145,6 +156,8 @@ public class PIDControl {
     public void cleanup() {
         accumulator = 0;
         output = 0;
+        prevTime = 0;
+        lastError = 0;
         inRange = false;
     }
 

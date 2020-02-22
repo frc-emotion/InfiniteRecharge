@@ -85,11 +85,11 @@ public class Constants {
     /**
      * Shooter General Constants
      */
-    static final double kShooterRPM = 5675;
+    static final double kShooterRPM = 5600;
     static final double kShooterThresholdRPM = 50;
     static final double kShooterThresholdTrigger = 0.3;
     static final double kShooterMaxOutput = 1;
-    static final double kShooterWaitTime = 500;
+    static final double kShooterWaitTime = 400;
 
     static final double kShooterMaxVelocity = 10;
 
@@ -102,7 +102,7 @@ public class Constants {
     /**
      * Shooter Two Step Constants
      */
-    static final double kShooterMinOutput = 0.5;
+    static final double kShooterMinOutput = 0.9;
 
     /**
      * Shooter PID Constants
@@ -123,8 +123,8 @@ public class Constants {
      */
     static final float kPDrive = 1;
     static final float kIDrive = 0;
-    static final float kDDrive = 0;
-    static final double kDriveTolerance = 0.2;
+    static final float kDDrive = 2.5f;    
+    static final double kDriveTolerance = 0.4;
     static final double kDriveRotation = 0.2;
 
     /**
