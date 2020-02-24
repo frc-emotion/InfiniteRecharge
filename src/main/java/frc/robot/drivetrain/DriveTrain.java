@@ -194,38 +194,11 @@ public class DriveTrain {
     }
         
     public void run() {
-<<<<<<< HEAD
         
         
        
         if (driveController.getAButtonPressed()) {
             invert = !invert;
-=======
-        driveChoices.addOption("pathfinder", 0);
-        driveChoices.addOption("arcade", 1);
-        driveChoices.addDefault("regular", 2);
-        int driveChoice = driveChoices.getSelected();
-
-        switch (driveChoice) {
-            case 0:
-                // Lets worry about this after drive train works
-                runPathFinderChoices();
-                break;
-            case 1:
-                runArcadeDrive();
-            default:
-                if (driveController.getAButtonPressed()) {
-                    invert = !invert;
-                }
-
-                if (driveController.getBButton()) {
-                    align();
-                } else {
-                    runTankDrive();
-                    pidControl.cleanup();
-                }
-                break;
->>>>>>> 2b70e11cdce51548107e72f35d07c0588d602d41
         }
 
         if (driveController.getBButton()) {
