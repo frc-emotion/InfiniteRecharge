@@ -13,6 +13,13 @@ public class Constants {
     static final int kOperatorPort = 1;
 
     /**
+     * limit switch ports
+     */
+    static final int lowerClimbLimitPort = 1;
+    static final int upperClimbLimitPort = 2;
+    
+
+    /**
      * USB Ports
      */
     static final Port kGyroPort = Port.kUSB;
@@ -57,8 +64,9 @@ public class Constants {
     /**
      * Motor Defaults
      */
-    static final int kSparkMaxCurrent = 35;
 
+    static final int kSparkMaxCurrent = 45;
+    static final int kTalonMaxCurrent = 60; //bc 40 A breakers
     /**
      * Pivot Constants
      */
@@ -85,11 +93,11 @@ public class Constants {
     /**
      * Shooter General Constants
      */
-    static final double kShooterRPM = 5675;
+    static final double kShooterRPM = 5600;
     static final double kShooterThresholdRPM = 50;
     static final double kShooterThresholdTrigger = 0.3;
     static final double kShooterMaxOutput = 1;
-    static final double kShooterWaitTime = 500;
+    static final double kShooterWaitTime = 400;
 
     static final double kShooterMaxVelocity = 10;
 
@@ -102,7 +110,7 @@ public class Constants {
     /**
      * Shooter Two Step Constants
      */
-    static final double kShooterMinOutput = 0.5;
+    static final double kShooterMinOutput = 0.9;
 
     /**
      * Shooter PID Constants
@@ -123,8 +131,8 @@ public class Constants {
      */
     static final float kPDrive = 1;
     static final float kIDrive = 0;
-    static final float kDDrive = 0;
-    static final double kDriveTolerance = 0.2;
+    static final float kDDrive = 2.5f;    
+    static final double kDriveTolerance = 0.4;
     static final double kDriveRotation = 0.2;
 
     /**
@@ -175,7 +183,7 @@ public class Constants {
 
     public static final int SCREW_TALON_L = 8;
     public static final int SCREW_TALON_R = 7;
-    public static final double SCREW_SPEED = 0.4;
+    public static final double SCREW_SPEED = 0.975;
 
     // solenoids
     public static final int PISTONR_FWD = 4;

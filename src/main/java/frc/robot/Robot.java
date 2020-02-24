@@ -32,7 +32,9 @@ public class Robot extends TimedRobot {
   private Shooter shooter;
   private DriveTrain drive;
   private Intake intake;
-  private AutoOptions auto;
+  //private AutoOptions auto;
+  private Climb climb;
+  private boolean num = true;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -40,13 +42,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+
     gyro = new AHRS(Port.kUSB);
 
     operatorController = new XboxController(Constants.kOperatorPort);
     driveController = new XboxController(Constants.kDrivePort);
     gyro = new AHRS(Constants.kGyroPort);
 
-    auto = new AutoOptions(Constants.kStartingLocations, Constants.kValidColors);
+    //auto = new AutoOptions(Constants.kStartingLocations, Constants.kValidColors);
 
     // Shooter Initialization
     shooter = new Shooter(Constants.kShooterPorts, Constants.kShooterForwardPort, Constants.kShooterReversePort,
@@ -84,6 +87,8 @@ public class Robot extends TimedRobot {
     drive.enablePIDControl(Constants.kPDrive, Constants.kIDrive, Constants.kDDrive, Constants.kDriveTolerance,
         Constants.kDriveRotation);
     drive.enableAlignment(Constants.kPortPipeline);
+
+    climb = new Climb(operatorController);
   }
 
   /**
@@ -113,7 +118,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-
+    
   }
 
   /**
@@ -121,10 +126,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    //drive.runPathFinderChoices();
+    
+    drive.autoChoice1();
+  
     shooter.update();
 
     shooter.dashboardRun();
-    drive.dashboardRun();
+    
   }
 
   /**
@@ -135,6 +144,8 @@ public class Robot extends TimedRobot {
     shooter.run();
     drive.run();
     intake.run();
+    climb.run();
+    
   }
 
   public void updateSmartDashboard() {

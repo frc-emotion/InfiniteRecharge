@@ -111,15 +111,15 @@ public class Intake {
     public void intake() {
         int consta = -1, constb = 1;
 
-        sparkA.set(consta * intakeOutput);
-        sparkB.set(constb * intakeOutput);
+        sparkA.set(-1*consta * intakeOutput);
+        sparkB.set(-1*constb * intakeOutput);
     }
 
     public void intakeReverse() {
         int consta = -1, constb = 1;
 
-        sparkA.set(-1 * consta * intakeOutput);
-        sparkB.set(-1 * constb * intakeOutput);
+        sparkA.set(1 * consta * intakeOutput);
+        sparkB.set(1 * constb * intakeOutput);
     }
     public void intakeOff() {
         sparkA.set(0);

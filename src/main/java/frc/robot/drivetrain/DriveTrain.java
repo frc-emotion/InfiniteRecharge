@@ -7,7 +7,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import edu.wpi.first.wpilibj.MotorSafety;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.XboxController;
@@ -25,6 +29,14 @@ import edu.wpi.first.wpilibj.Filesystem;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import edu.wpi.first.wpilibj.command.Subsystem;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import edu.wpi.first.wpilibj.Joystick;
+
+/**
 
 /**
  * Class that runs the drive train
@@ -54,7 +66,7 @@ public class DriveTrain {
     private DifferentialDrive drive; // DifferentialDrive object
     private double slowPower, regularPower, turboPower; // Save power values
     private boolean invert; // Flag for whether directions are inverted
-
+    private boolean tester = true;
     private Alignment alignment;
 
     private PIDControl pidControl;
@@ -63,11 +75,16 @@ public class DriveTrain {
     private PathConverter pathConverter;
     private boolean pathDone;
 
+    public CANEncoder rEnc, lEnc;
+
+    private double curTime;
+   
+
     public DriveTrain(int[] leftPorts, int[] rightPorts, int maxCurrent, double slowPower, double regularPower,
             double turboPower, XboxController driveController) {
-        driveChoices = new SendableChooser<Integer>();
-        pathChoices = new SendableChooser<Integer>();
+       initShuffleBoard();
 
+        
         pathDone = false;
         // 3 Ports for each side
         if (leftPorts.length != 3 || rightPorts.length != 3) {
@@ -98,14 +115,16 @@ public class DriveTrain {
             spark.setSmartCurrentLimit(maxCurrent);
             spark.setSecondaryCurrentLimit(maxCurrent);
             spark.setIdleMode(IdleMode.kBrake); // IdleMode will always be kBrake for driveTrain motors
+            
+
         }
 
         leftGroup = new SpeedControllerGroup(lsparkA, lsparkB, lsparkC);
         rightGroup = new SpeedControllerGroup(rsparkA, rsparkB, rsparkC);
 
         drive = new DifferentialDrive(leftGroup, rightGroup);
-
-        // Store variables
+        drive.setSafetyEnabled(false);
+        // Store variables//
         this.driveController = driveController;
         this.slowPower = slowPower;
         this.regularPower = regularPower;
@@ -152,13 +171,41 @@ public class DriveTrain {
     /**
      * Function that should be called by teleopPeriodic
      */
+
+    public void autoChoice1() {
+
+        if(tester == true) {
+            curTime = System.currentTimeMillis();
+        
+ 
+        while(System.currentTimeMillis() - curTime < 500) {
+            drive.tankDrive(0.5, 0.5);
+            tester = false;
+        } 
+
+    }
+        if(tester == false) {
+            drive.tankDrive(0, 0);
+        }
+        
+
+
+        
+    }
+        
     public void run() {
+<<<<<<< HEAD
+        
+        
+       
+        if (driveController.getAButtonPressed()) {
+            invert = !invert;
+=======
         driveChoices.addOption("pathfinder", 0);
         driveChoices.addOption("arcade", 1);
         driveChoices.addDefault("regular", 2);
         int driveChoice = driveChoices.getSelected();
-        // temp
-        driveChoice = 0;
+
         switch (driveChoice) {
             case 0:
                 // Lets worry about this after drive train works
@@ -178,35 +225,48 @@ public class DriveTrain {
                     pidControl.cleanup();
                 }
                 break;
+>>>>>>> 2b70e11cdce51548107e72f35d07c0588d602d41
         }
 
-        dashboardRun();
+        if (driveController.getBButton()) {
+            align();
+        } else {
+            runTankDrive();
+            pidControl.cleanup();
+        }
+                
+        
+     dashboardRun();
     }
 
-    private void runPathFinderChoices() {
+    public void runPathFinderChoices() {
+       System.out.println(pathDone);
         if (!pathDone) {
             runPathFinder();
             pathDone = true;
+        } else {
+            return;
         }
-        if (pathConverter.isDriveAllowed())
-            runTankDrive();
     }
+        
 
     public void runPathFinder() {
-        pathChoices.addDefault("RS1-B2", 0);
+        
 
         int pathChoice = pathChoices.getSelected().intValue();
-        
+
         String pathName = "";
 
         switch (pathChoice) {
         case 0:
-            pathName = "RS1-B2";
+            pathName = "slowStraight.pf1";
             break;
         case 1:
-            pathName = "straighthab";
+            pathName = "RS1-B2.wpilib";
             break;
         case 2:
+            pathName = "Straight.pf1";
+        case 10:
             Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
                     Trajectory.Config.SAMPLES_HIGH, 0.02, 0.4, 0.8, 5.0);
             Trajectory trajectory = Pathfinder.generate(PathTrajectories.rightHab, config);
@@ -222,9 +282,10 @@ public class DriveTrain {
 
         if (!pathName.equals("")) {
             String dir = Filesystem.getDeployDirectory().toString();
-            String fileName = pathName + ".wpilib.csv";
+            String fileName = pathName + ".csv";
 
             File trajFile = new File(dir + "/" + fileName);
+            System.out.println(trajFile);
 
             Trajectory traj = null;
             try {
@@ -267,8 +328,8 @@ public class DriveTrain {
         else if (driveController.getBumper(Hand.kRight))
             drivePower = turboPower;
 
-        // However driveExponent should be constant (Changable by SmartDashboard)
-        double driveExponent = SmartDashboard.getNumber("driveExponent", 1.8);
+        // However driveExponent should be constant (Changeable by SmartDashboard)
+        double driveExponent = SmartDashboard.getNumber("Drive Exponent", 1.8);
 
         // Use an exponential curve to provide fine control at low speeds but with a
         // high maximum speed
@@ -289,6 +350,24 @@ public class DriveTrain {
      * Only exposed for autonomous in order to insure continually updates to
      * SmartDashboard.
      */
+
+    public void autoDrive()
+ {
+     drive.tankDrive(0.2,0.2);
+ }    
+ private void initShuffleBoard() {
+
+
+        SmartDashboard.putBoolean("Pathfinder Job", false);
+
+        pathChoices = new SendableChooser<Integer>();
+        pathChoices.setDefaultOption("slowStraight", 0);
+
+        pathChoices.addOption("RS1-B2", 1);
+        pathChoices.addOption("slowStraight", 0);
+        pathChoices.addOption("Straight", 2);
+        SmartDashboard.putData("PathFinder Choices", pathChoices);
+    }
     public void dashboardRun() {
         double[] motorTemps = new double[6];
         for (int i = 0; i < motorTemps.length; i++) {
@@ -298,5 +377,6 @@ public class DriveTrain {
         SmartDashboard.putNumberArray("DriveTrainTemperature(lA|lB|lC|rA|rB|rC)", motorTemps);
         SmartDashboard.putBoolean("Aligned", pidControl.isInRange());
         SmartDashboard.putBoolean("PortFound", alignment.targetFound());
+        
     }
 }

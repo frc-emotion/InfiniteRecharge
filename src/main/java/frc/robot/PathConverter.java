@@ -111,7 +111,7 @@ public class PathConverter {
      */
     private void followPathHelper() {
         // stop notifier when it is finished, or when movement detected from controllers
-        if ((lFollower.isFinished() || rFollower.isFinished()) || checkControllers()) {
+        if ((lFollower.isFinished() || rFollower.isFinished())) {
             // driveController.setRumble(RumbleType.kLeftRumble, 0.5);
             // driveController.setRumble(RumbleType.kRightRumble, 0.5);
             SmartDashboard.putBoolean("Pathfinder Job", true);

@@ -65,7 +65,7 @@ public class Shooter {
 
     private Pivot pivot;
 
-    private double prevTime;
+    private double prevTime, waitTime;
 
     public Shooter(int[] ports, int forwardChannel, int reverseChannel, int maxCurrent, double targetRPM,
             double waitTime, double thresholdRPM, double thresholdTrigger, double maxOutput,
@@ -102,6 +102,7 @@ public class Shooter {
         this.thresholdRPM = thresholdRPM;
         this.thresholdTrigger = thresholdTrigger;
         this.maxOutput = maxOutput;
+        this.waitTime = waitTime;
 
         // Set default values
 
@@ -246,7 +247,7 @@ public class Shooter {
         if (prevTime == 0) {
             prevTime = System.currentTimeMillis();
         }
-        if (System.currentTimeMillis() - prevTime > 350) {
+        if (System.currentTimeMillis() - prevTime > waitTime) {
             hook.set(Value.kReverse);
         }
     }
