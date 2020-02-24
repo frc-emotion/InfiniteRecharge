@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 
 /**
  * Class that runs the Shooting Mechanism
@@ -65,7 +66,7 @@ public class Shooter {
 
     private Pivot pivot;
 
-    private double prevTime, waitTime;
+    private double prevTime, waitTime, startTime;
 
     public Shooter(int[] ports, int forwardChannel, int reverseChannel, int maxCurrent, double targetRPM,
             double waitTime, double thresholdRPM, double thresholdTrigger, double maxOutput,
@@ -110,7 +111,7 @@ public class Shooter {
         currentRPM = 0;
         minOutput = 0;
         kI = kD = 0;
-        prevTime = 0;
+        prevTime = startTime = 0;
     }
 
     public void enablePivot(int motorPort, int maxCurrent, int lowerLimitPort, double teleopConstant,
@@ -206,11 +207,16 @@ public class Shooter {
         // Trigger Button should be held to activate
         if (shooterController.getTriggerAxis(Hand.kRight) >= thresholdTrigger) {
             shoot();
+        } else if (shooterController.getStartButton()) {
+            turn();
+        } else if (shooterController.getBackButton()) {
+            rotate();
         } else {
             pivot.run();
             spinDown();
             hook.set(Value.kForward);
             prevTime = 0;
+            startTime = 0;
         }
 
         dashboardRun();
@@ -236,6 +242,24 @@ public class Shooter {
         SmartDashboard.putNumber("ShooterOutput", output);
         SmartDashboard.putBoolean("ShooterVelocityInRange", atTargetRPM());
         SmartDashboard.putBoolean("ShooterActivated", activated);
+    }
+
+    public void turn() {
+        int constd = 1;
+        sparkA.set(constd * Constants.kShooterTurnSpeed);
+        sparkB.set(constd * Constants.kShooterTurnSpeed);
+    }
+
+    public void rotate() {
+        if (startTime == 0) {
+            startTime = System.currentTimeMillis();
+        }
+
+        if (System.currentTimeMillis() - startTime < Constants.kShooterRotateTime) {
+            turn();
+        } else {
+            spinDown();
+        }
     }
 
     /**

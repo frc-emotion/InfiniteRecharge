@@ -98,8 +98,8 @@ public class Constants {
     static final double kShooterThresholdTrigger = 0.3;
     static final double kShooterMaxOutput = 1;
     static final double kShooterWaitTime = 400;
-
-    static final double kShooterMaxVelocity = 10;
+    public static final double kShooterTurnSpeed = 0.2;
+    public static final double kShooterRotateTime = 4000;
 
     /**
      * Shooter Choosable Controller Constants
