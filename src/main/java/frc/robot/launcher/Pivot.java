@@ -73,8 +73,7 @@ public class Pivot {
             int constD = 1;
 
             if (!lowerLimit.get() && constD * operatorController.getY(Hand.kLeft) < 0) {
-                operatorController.setRumble(RumbleType.kLeftRumble, 0.2);
-                screwMotor.set(0);
+                callibrate();
             } else {
                 screwMotor.set(operatorController.getY(Hand.kLeft) * teleopConstant);
             }
@@ -82,7 +81,6 @@ public class Pivot {
         } else if (operatorController.getBButton()) {
             align();
         } else {
-            operatorController.setRumble(RumbleType.kLeftRumble, 0);
             screwMotor.set(0);
         }
 

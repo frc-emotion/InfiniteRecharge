@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
         Constants.kTeleopConstant, Constants.kCallibrateSpeed, Constants.kRevToAngle,
         Constants.kPivotControllerThreshold, Constants.kPivotAngleThreshold, Constants.kPivotMaxAngle,
         Constants.kMountingHeight, Constants.kMountingAngle, Constants.kRefrenceHeight, Constants.kPortPipeline,
-        Constants.kShooterMaxVelocity);
+        Constants.kShooterVelocity);
     shooter.enablePIDController(Constants.kPivotP, Constants.kPivotI, Constants.kPivotD);
 
     intake = new Intake(Constants.kIntakePorts, Constants.kSparkMaxCurrent, Constants.kIntakeForwardPort,

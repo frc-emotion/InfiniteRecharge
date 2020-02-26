@@ -17,7 +17,6 @@ public class Constants {
      */
     static final int lowerClimbLimitPort = 1;
     static final int upperClimbLimitPort = 2;
-    
 
     /**
      * USB Ports
@@ -36,9 +35,9 @@ public class Constants {
     /**
      * Pneumatics Ports
      */
-    static final int kShooterForwardPort = 1;
-    static final int kShooterReversePort = 2;
-    static final int kIntakeForwardPort = 0;
+    static final int kShooterForwardPort = 0;
+    static final int kShooterReversePort = 1;
+    static final int kIntakeForwardPort = 2;
     static final int kIntakeReversePort = 3;
 
     /**
@@ -66,7 +65,7 @@ public class Constants {
      */
 
     static final int kSparkMaxCurrent = 45;
-    static final int kTalonMaxCurrent = 60; //bc 40 A breakers
+    static final int kTalonMaxCurrent = 60; // bc 40 A breakers
     /**
      * Pivot Constants
      */
@@ -101,6 +100,7 @@ public class Constants {
     public static final double kShooterTurnSpeed = 0.2;
     public static final double kShooterRotateTime = 4000;
 
+    public static final double kShooterVelocity = 10;
     /**
      * Shooter Choosable Controller Constants
      */
@@ -131,7 +131,7 @@ public class Constants {
      */
     static final float kPDrive = 1;
     static final float kIDrive = 0;
-    static final float kDDrive = 2.5f;    
+    static final float kDDrive = 2.5f;
     static final double kDriveTolerance = 0.4;
     static final double kDriveRotation = 0.2;
 
