@@ -56,9 +56,9 @@ public class Constants {
      * LimeLight Constants
      */
 
-    static final double kMountingHeight = 0.25;
-    static final double kMountingAngle = 20;
-    static final double kRefrenceHeight = 3.3;
+    static final double kMountingHeight = 0.4191;
+    static final double kMountingAngle = 40;
+    static final double kRefrenceHeight = 0.249;
 
     /**
      * Motor Defaults
@@ -186,10 +186,8 @@ public class Constants {
     public static final double SCREW_SPEED = 0.975;
 
     // solenoids
-    public static final int PISTONR_FWD = 4;
-    public static final int PISTRONR_BKWD = 5;
-    public static final int PISTONL_FWD = 6;
-    public static final int PISTONL_BKWD = 7;
+    public static final int PISTONL_FWD = 4;
+    public static final int PISTONL_BKWD = 5;
 
     public static double WHEELBASE_WIDTH = 0.6898513;
     public static double WHEEL_DIAMETER = 0.1524;

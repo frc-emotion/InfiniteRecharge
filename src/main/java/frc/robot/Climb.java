@@ -19,7 +19,7 @@ public class Climb {
     SpeedControllerGroup climbGroup;
     private XboxController operatorController;
     WPI_TalonSRX screwTalonL, screwTalonR;
-    DoubleSolenoid pistonL, pistonR;
+    DoubleSolenoid pistonL;
     private static int pistonPos = 0;
     public static DigitalInput upperClimbLimitSwitch;
     public static DigitalInput lowerClimbLimitSwitch;
@@ -41,7 +41,7 @@ public class Climb {
         climbGroup = new SpeedControllerGroup(screwTalonL, screwTalonR);
 
         pistonL = new DoubleSolenoid(Constants.PISTONL_FWD, Constants.PISTONL_BKWD);
-        pistonR = new DoubleSolenoid(Constants.PISTONR_FWD, Constants.PISTRONR_BKWD);
+        
 
         screwTalonL.configContinuousCurrentLimit(Constants.kTalonMaxCurrent);
         
@@ -62,11 +62,9 @@ public class Climb {
         if (operatorController.getYButtonPressed()) {
             if (pistonPos == 0) {
                 pistonL.set(Value.kForward);
-                pistonR.set(Value.kForward);
                 pistonPos = 1;
             } else if (pistonPos == 1) {
                 pistonL.set(Value.kReverse);
-                pistonR.set(Value.kReverse);
                 pistonPos = 0;
             }
         }
