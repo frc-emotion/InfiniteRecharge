@@ -73,8 +73,8 @@ public class Constants {
     public static final double SCREW_SPEED = 0.975;
 
     // solenoids
-    public static final int PISTONL_FWD = 4;
-    public static final int PISTONL_BKWD = 5;
+    public static final int PISTONL_FWD = 2;
+    public static final int PISTONL_BKWD = 3;
 
     public static double WHEELBASE_WIDTH = 0.6898513;
     public static double WHEEL_DIAMETER = 0.1524;
