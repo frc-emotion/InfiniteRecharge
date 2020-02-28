@@ -20,11 +20,13 @@ import frc.robot.Robot;
  */
 public class Pivot {
     private CANSparkMax sparkA; // Spark to control pivot location with screw mechanism
+    private Alignment alignment; // Alignment object
     private DigitalOutput lowerLimit; // lowerLimit is active low
 
     public Pivot() {
         sparkA = new CANSparkMax(Constants.PIVOT_PORT, MotorType.kBrushless);
         lowerLimit = new DigitalOutput(Constants.PIVOT_LIMIT_PORT);
+        alignment = new Alignment();
     }
 
     public void callibrate() {
@@ -87,6 +89,7 @@ public class Pivot {
     }
 
     public void align() {
+        setRevolution(alignment.getAngle()*Constants.RADIANS_TO_REV);
     }
 
     public void setAgainst() {

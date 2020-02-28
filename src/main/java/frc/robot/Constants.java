@@ -24,6 +24,11 @@ public class Constants {
     // LimeLight Ports
     public static int PORT_PIPELINE = 0;
 
+    // LimeLight Constants
+    public static double MOUNTING_HEIGHT = 0.4191; // Meters
+    public static double MOUNTING_ANGLE = 0.69; // Radians
+    public static double REFRENCE_HEIGHT = 0.249; // Meters
+
     // Motor Constants
     public static int NEO_MAX_CURRENT = 45;
     public static int TALON_MAX_CURRENT = 75;
@@ -47,6 +52,8 @@ public class Constants {
     public static double SHOOTER_SHOOT_TIME = 500;
     public static double SHOOTER_ROTATE_TIME = 2000;
 
+    public static double SHOOTER_MAX_VELOCITY = 10; // Meters/second
+
     // Intake Constants
     public static double INTAKE_INTAKE_SPEED = 0.3;
     public static double INTAKE_TUBE_SPEED = 0.5;
@@ -57,6 +64,8 @@ public class Constants {
     public static double PIVOT_AUTO_SPEED = 0.1;
 
     public static double PIVOT_THRESHOLD = 0.5;
+
+    public static double RADIANS_TO_REV = 10; // NEED TO GET
 
     // Climb Constants
     public static final int SCREW_TALON_L = 8;
