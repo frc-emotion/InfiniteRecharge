@@ -72,7 +72,7 @@ public class Pivot {
         if (Math.abs(operatorController.getY(Hand.kLeft)) > controllerThreshold) {
             int constD = 1;
 
-            if (!lowerLimit.get() && constD * operatorController.getY(Hand.kLeft) < 0) {
+            if (!lowerLimit.get() && constD * operatorController.getY(Hand.kLeft) > 0) {
                 callibrate();
             } else {
                 screwMotor.set(operatorController.getY(Hand.kLeft) * teleopConstant);
@@ -86,6 +86,7 @@ public class Pivot {
 
         SmartDashboard.putNumber("currentRevolution", screwMotor.getEncoder().getPosition());
         SmartDashboard.putNumber("currentAngle", getAngle());
+        SmartDashboard.putBoolean("atLowerLimit", lowerLimit.get());
     }
 
     public void align() {

@@ -35,10 +35,10 @@ public class Constants {
     /**
      * Pneumatics Ports
      */
-    static final int kShooterForwardPort = 0;
-    static final int kShooterReversePort = 1;
-    static final int kIntakeForwardPort = 2;
-    static final int kIntakeReversePort = 3;
+    static final int kShooterForwardPort = 1;
+    static final int kShooterReversePort = 0;
+    static final int kIntakeForwardPort = 4;
+    static final int kIntakeReversePort = 5;
 
     /**
      * Digital Ports
@@ -186,8 +186,8 @@ public class Constants {
     public static final double SCREW_SPEED = 0.975;
 
     // solenoids
-    public static final int PISTONL_FWD = 4;
-    public static final int PISTONL_BKWD = 5;
+    public static final int PISTONL_FWD = 2;
+    public static final int PISTONL_BKWD = 3;
 
     public static double WHEELBASE_WIDTH = 0.6898513;
     public static double WHEEL_DIAMETER = 0.1524;
