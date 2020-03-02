@@ -99,7 +99,7 @@ public class Intake {
 
     public void tubeShoot() {
         sparkC.set(Constants.INTAKE_SHOOT_SPEED);
-        sparkC.set(-Constants.INTAKE_SHOOT_SPEED);
+        sparkD.set(-Constants.INTAKE_SHOOT_SPEED);
     }
 
     public void tubeOff() {
