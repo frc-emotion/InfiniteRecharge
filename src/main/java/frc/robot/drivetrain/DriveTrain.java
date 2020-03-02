@@ -74,6 +74,7 @@ public class DriveTrain {
             align();
         } else {
             runTankDrive();
+            reset();
         }
     }
 
@@ -81,6 +82,10 @@ public class DriveTrain {
         if (alignment.targetFound()) {
             drive.arcadeDrive(0, pidControl.getValue(0, alignment.getError()));
         }
+    }
+    
+    public void reset() {
+        pidControl.cleanup();
     }
 
     public void autoChoices(char pos) {
