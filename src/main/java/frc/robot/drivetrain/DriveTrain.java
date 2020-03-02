@@ -156,13 +156,23 @@ public class DriveTrain {
      * Function that should be called by teleopPeriodic
      */
 
-    public void autoChoice1() {
+    public void autoChoices(char pos) {
 
         if (tester == true) {
             curTime = System.currentTimeMillis();
 
             while (System.currentTimeMillis() - curTime < 500) {
-                drive.tankDrive(0.5, 0.5);
+                switch(pos) {
+                case 'm':
+                    drive.tankDrive(0.5, 0.5);
+                    break;
+                case 'r':
+                    drive.tankDrive(0.5, 0.7);
+                    break;
+                case 'l':
+                    drive.tankDrive(0.7, 0.5);
+                    break;
+                }
                 tester = false;
             }
 

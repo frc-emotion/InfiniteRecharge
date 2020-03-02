@@ -127,8 +127,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     //drive.runPathFinderChoices();
-    
-    drive.autoChoice1();
+    char pos = 'm'; //temp
+    //add boolean for when shot
+    drive.autoChoices(pos);
   
     shooter.update();
 
@@ -152,7 +153,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Nav-X Angle", gyro.getAngle());
   }
 
-  /**
+  /**f
    * This function is called periodically during test mode.
    */
   @Override
