@@ -30,6 +30,9 @@ public class Robot extends TimedRobot {
   private Intake intake;
   private Pivot pivot;
   private Shooter shooter;
+  public boolean isAligned = false;
+  public boolean hasShot = false;
+  public boolean autoDone = false;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -81,6 +84,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+      if(isAligned == false) {
+        pivot.setLine();
+        isAligned = true;
+      }
+
+      if(isAligned == true && hasShot == false) {
+        shooter.shoot();
+        hasShot = true;
+      }
+
+      if(isAligned == true && hasShot == true && autoDone == false){
+        char pos = 'm'; //temp
+        drivetrain.autoChoices(pos);
+        autoDone = true;     
+       }
   }
 
   /**

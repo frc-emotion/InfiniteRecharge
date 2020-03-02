@@ -22,6 +22,8 @@ public class DriveTrain {
 
     private PIDControl pidControl;
     private Alignment alignment;
+    public double curTime;
+    public boolean tester = true;
 
     public DriveTrain() {
         lsparkA = new CANSparkMax(Constants.DRIVE_LEFT_PORTS[0], MotorType.kBrushless);
@@ -78,6 +80,32 @@ public class DriveTrain {
     public void align() {
         if (alignment.targetFound()) {
             drive.arcadeDrive(0, pidControl.getValue(0, alignment.getError()));
+        }
+    }
+
+    public void autoChoices(char pos) {
+
+        if (tester == true) {
+            curTime = System.currentTimeMillis();
+
+            while (System.currentTimeMillis() - curTime < 500) {
+                switch(pos){
+                case 'm':
+                    drive.tankDrive(0.5, 0.5);
+                    break;
+                case 'r':
+                    drive.tankDrive(0.5, 0.7);
+                    break;
+                case 'l':
+                    drive.tankDrive(0.7, 0.5);
+                    break;
+            
+                }
+                tester = false;
+            }
+        }
+        if (tester == false) {
+            drive.tankDrive(0, 0);
         }
     }
 
