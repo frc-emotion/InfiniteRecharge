@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
@@ -43,11 +42,13 @@ public class Pivot {
         return -sparkA.getEncoder().getPosition();
     }
 
+    public boolean atRev(double angle) {
+        return Math.abs(angle-getRevolution()) < Constants.PIVOT_THRESHOLD;
+    }
+
     public void run() {
         // DEBUGGING
-        SmartDashboard.putNumber("PivotRevolution", getRevolution());
-        System.out.println(getRevolution());
-        SmartDashboard.putBoolean("AtLowerLimit", !lowerLimit.get());
+        // System.out.println(getRevolution());
 
         if (Math.abs(Robot.operatorController.getY(Hand.kLeft)) > Constants.TRIGGER_THRESHOLD) {
             teleopRun();
@@ -108,11 +109,27 @@ public class Pivot {
     }
 
     public void setWheel() {
-        setRevolution(24);
+        setRevolution(33);
     }
 
     public void setTrench() {
-        setRevolution(13.5);
+        setRevolution(13.7);
+    }
+
+    public boolean atAgainst() {
+        return atRev(79);
+    }
+
+    public boolean atLine() {
+        return atRev(19.5);
+    }
+
+    public boolean atWheel() {
+        return atRev(33);
+    }
+
+    public boolean atTrench() {
+        return atRev(13.5);
     }
 
     public void setRevolution(double rev) {

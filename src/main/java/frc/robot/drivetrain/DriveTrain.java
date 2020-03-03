@@ -22,8 +22,6 @@ public class DriveTrain {
 
     private PIDControl pidControl;
     private Alignment alignment;
-    public double curTime;
-    public boolean tester = true;
 
     public DriveTrain() {
         lsparkA = new CANSparkMax(Constants.DRIVE_LEFT_PORTS[0], MotorType.kBrushless);
@@ -68,7 +66,7 @@ public class DriveTrain {
     }
 
     public void run() {
-        if (Robot.driverController.getAButton()) {
+        if (Robot.driverController.getAButtonPressed()) {
             invert = !invert;
         }
 
@@ -80,6 +78,14 @@ public class DriveTrain {
         }
     }
 
+    public void moveForward() {
+        drive.arcadeDrive(Constants.DRIVE_FORWARD_SPEED, 0);
+    }
+
+    public void stop() {
+        drive.arcadeDrive(0, 0);
+    }
+
     public void align() {
         if (alignment.targetFound()) {
             if (!pidControl.isInRange()) {
@@ -87,38 +93,12 @@ public class DriveTrain {
             }
         }
         if (pidControl.isInRange()) {
-            drive.arcadeDrive(0, 0);
+            stop();
         }
     }
     
     public void reset() {
         pidControl.cleanup();
-    }
-
-    public void autoChoices(char pos) {
-
-        if (tester == true) {
-            curTime = System.currentTimeMillis();
-
-            while (System.currentTimeMillis() - curTime < 500) {
-                switch(pos){
-                case 'm':
-                    drive.tankDrive(0.5, 0.5);
-                    break;
-                case 'r':
-                    drive.tankDrive(0.5, 0.7);
-                    break;
-                case 'l':
-                    drive.tankDrive(0.7, 0.5);
-                    break;
-            
-                }
-                tester = false;
-            }
-        }
-        if (tester == false) {
-            drive.tankDrive(0, 0);
-        }
     }
 
     private void runTankDrive() {

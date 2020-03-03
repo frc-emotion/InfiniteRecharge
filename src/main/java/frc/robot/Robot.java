@@ -30,9 +30,9 @@ public class Robot extends TimedRobot {
   private Intake intake;
   private Pivot pivot;
   private Shooter shooter;
-  public boolean isAligned = false;
-  public boolean hasShot = false;
-  public boolean autoDone = false;
+
+  private boolean pivotAligned;
+  private double startTime, moveTime;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -77,6 +77,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    pivotAligned = false;
+    startTime = 0;
+    moveTime = 0;
   }
 
   /**
@@ -84,21 +87,37 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-      if(isAligned == false) {
-        pivot.setLine();
-        isAligned = true;
-      }
+    pivotAligned = pivot.atLine();
+    if (!pivotAligned) {
+      pivot.setLine();
+      return;
+    }
+    
+    pivot.stop();
 
-      if(isAligned == true && hasShot == false) {
-        shooter.shoot();
-        hasShot = true;
-      }
+    if (startTime == 0) {
+      startTime = System.currentTimeMillis();
+    }
 
-      if(isAligned == true && hasShot == true && autoDone == false){
-        char pos = 'm'; //temp
-        drivetrain.autoChoices(pos);
-        autoDone = true;     
-       }
+    if (System.currentTimeMillis() - startTime < Constants.AUTO_SHOOT_TIME) {
+      shooter.shoot();
+      intake.tubeShoot();
+      return;
+    }
+
+    shooter.stop();
+    intake.tubeOff();
+
+    if (moveTime == 0) {
+      moveTime = System.currentTimeMillis();
+    }
+
+    if (System.currentTimeMillis() - moveTime < Constants.AUTO_MOVE_TIME) {
+      drivetrain.moveForward();
+      return;
+    }
+
+    drivetrain.stop();
   }
 
   /**
