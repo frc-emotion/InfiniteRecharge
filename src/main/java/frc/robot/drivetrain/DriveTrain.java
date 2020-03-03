@@ -24,6 +24,9 @@ public class DriveTrain {
     private Alignment alignment;
     public double curTime;
     public boolean tester = true;
+    public double timeForAutoDrive = 500;
+    private double autoSpeedL;
+    private double autoSpeedR;
 
     public DriveTrain() {
         lsparkA = new CANSparkMax(Constants.DRIVE_LEFT_PORTS[0], MotorType.kBrushless);
@@ -95,30 +98,28 @@ public class DriveTrain {
         pidControl.cleanup();
     }
 
-    public void autoChoices(char pos) {
-
-        if (tester == true) {
-            curTime = System.currentTimeMillis();
-
-            while (System.currentTimeMillis() - curTime < 500) {
-                switch(pos){
-                case 'm':
-                    drive.tankDrive(0.5, 0.5);
-                    break;
-                case 'r':
-                    drive.tankDrive(0.5, 0.7);
-                    break;
-                case 'l':
-                    drive.tankDrive(0.7, 0.5);
-                    break;
-            
-                }
-                tester = false;
-            }
+    public void autoChoices(char pos, double curTime) {
+        switch(pos) {
+            case 'm':
+                autoSpeedL = 0.5;
+                autoSpeedR = 0.5;
+                break;
+            case 'r':
+                autoSpeedL = 0.5;
+                autoSpeedR = 0.7;
+                break;
+            case 'l':
+                autoSpeedL = 0.7;
+                autoSpeedR = 0.5; 
+                break;
         }
-        if (tester == false) {
+        if(System.currentTimeMillis() - curTime < 500) {
+            drive.tankDrive(autoSpeedL, autoSpeedR);
+        } else {
             drive.tankDrive(0, 0);
         }
+
+
     }
 
     private void runTankDrive() {

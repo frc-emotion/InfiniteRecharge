@@ -30,6 +30,7 @@ public class Robot extends TimedRobot {
   private Intake intake;
   private Pivot pivot;
   private Shooter shooter;
+  public double curTime;
   public boolean isAligned = false;
   public boolean hasShot = false;
   public boolean autoDone = false;
@@ -77,6 +78,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
   }
 
   /**
@@ -87,16 +89,18 @@ public class Robot extends TimedRobot {
       if(isAligned == false) {
         pivot.setLine();
         isAligned = true;
+        
       }
 
       if(isAligned == true && hasShot == false) {
         shooter.shoot();
+        curTime = System.currentTimeMillis();
         hasShot = true;
       }
 
       if(isAligned == true && hasShot == true && autoDone == false){
         char pos = 'm'; //temp
-        drivetrain.autoChoices(pos);
+        drivetrain.autoChoices(pos, curTime);
         autoDone = true;     
        }
   }
