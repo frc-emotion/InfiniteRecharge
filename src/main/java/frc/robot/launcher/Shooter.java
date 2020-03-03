@@ -101,7 +101,7 @@ public class Shooter {
      */
     public void spinUp() {
         sparkA.set(Constants.SHOOTER_SHOOT_SPEED);
-        sparkA.set(-Constants.SHOOTER_SHOOT_SPEED);
+        sparkB.set(-Constants.SHOOTER_SHOOT_SPEED);
     }
 
     /**
@@ -109,7 +109,7 @@ public class Shooter {
      */
     public void spinDown() {
         sparkA.set(0);
-        sparkA.set(0);
+        sparkB.set(0);
     }
 
     /**

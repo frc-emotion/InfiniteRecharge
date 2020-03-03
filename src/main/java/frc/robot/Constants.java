@@ -14,11 +14,11 @@ public class Constants {
 
     // Solenoid Ports
     public static int[] PNEUMATIC_SHOOTER_PORT = { 1, 0 };
-    public static int[] PNEUMATIC_INTAKE_PORT = { 5, 6 };
+    public static int[] PNEUMATIC_INTAKE_PORT = { 4, 5 };
 
     // DIO Ports
-    public static int PIVOT_LIMIT_PORT = 0;
-    public static int CLIMB_LOWER_LIMIT_PORT = 1;
+    public static int PIVOT_LIMIT_PORT = 1;
+    public static int CLIMB_LOWER_LIMIT_PORT = 0;
     public static int CLIMB_UPPER_LIMIT_PORT = 2;
 
     // LimeLight Ports
@@ -38,12 +38,14 @@ public class Constants {
 
     // Drivetrain Constants
     public static double DRIVE_SLOW_POWER = 0.4;
-    public static double DRIVE_REGULAR_POWER = 0.4;
-    public static double DRIVE_TURBO_POWER = 0.99;
+    public static double DRIVE_REGULAR_POWER = 0.6;
+    public static double DRIVE_TURBO_POWER = 0.8;
 
     public static float DRIVE_KP = 1;
     public static float DRIVE_KI = 0;
-    public static float DRIVE_KD = 50f;
+    public static float DRIVE_KD = 0.5f;
+    public static double DRIVE_MAX_ROTATION_SPEED = 0.3;
+    public static double DRIVE_ROTATION_TOLERANCE = 5;
 
     // Shooter Constants
     public static double SHOOTER_SHOOT_SPEED = 1;
@@ -55,15 +57,15 @@ public class Constants {
     public static double SHOOTER_MAX_VELOCITY = 10; // Meters/second
 
     // Intake Constants
-    public static double INTAKE_INTAKE_SPEED = 0.3;
-    public static double INTAKE_TUBE_SPEED = 0.5;
+    public static double INTAKE_INTAKE_SPEED = 0.65;
+    public static double INTAKE_TUBE_SPEED = 0.7;
     public static double INTAKE_SHOOT_SPEED = 1;
 
     // Pivot Constants
     public static double PIVOT_TELEOP_SPEED = 0.25;
-    public static double PIVOT_AUTO_SPEED = 0.1;
+    public static double PIVOT_AUTO_SPEED = 0.2;
 
-    public static double PIVOT_THRESHOLD = 0.5;
+    public static double PIVOT_THRESHOLD = 1;
 
     public static double RADIANS_TO_REV = 10; // NEED TO GET
 

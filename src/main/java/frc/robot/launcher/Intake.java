@@ -65,10 +65,9 @@ public class Intake {
             intakeUp();
         }
 
-        if (Robot.operatorController.getBumper(Hand.kLeft)
-                || Robot.operatorController.getTriggerAxis(Hand.kLeft) >= Constants.TRIGGER_THRESHOLD) {
+        if (Robot.operatorController.getBumper(Hand.kLeft)) {
             tubeIntake();
-        } else if (Robot.operatorController.getTriggerAxis(Hand.kRight) >= Constants.TRIGGER_THRESHOLD) {
+        } else if (Robot.operatorController.getTriggerAxis(Hand.kLeft) >= Constants.TRIGGER_THRESHOLD || Robot.operatorController.getTriggerAxis(Hand.kRight) >= Constants.TRIGGER_THRESHOLD) {
             tubeShoot();
         } else {
             tubeOff();
@@ -85,11 +84,11 @@ public class Intake {
     }
 
     public void intakeDown() {
-        intakeSolenoid.set(Value.kForward);
+        intakeSolenoid.set(Value.kReverse);
     }
 
     public void intakeUp() {
-        intakeSolenoid.set(Value.kReverse);
+        intakeSolenoid.set(Value.kForward);
     }
 
     public void tubeIntake() {

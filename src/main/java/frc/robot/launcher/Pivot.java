@@ -3,7 +3,7 @@ package frc.robot.launcher;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -21,19 +21,17 @@ import frc.robot.Robot;
 public class Pivot {
     private CANSparkMax sparkA; // Spark to control pivot location with screw mechanism
     private Alignment alignment; // Alignment object
-    private DigitalOutput lowerLimit; // lowerLimit is active low
+    private DigitalInput lowerLimit; // lowerLimit is active low
 
     public Pivot() {
         sparkA = new CANSparkMax(Constants.PIVOT_PORT, MotorType.kBrushless);
-        lowerLimit = new DigitalOutput(Constants.PIVOT_LIMIT_PORT);
+        lowerLimit = new DigitalInput(Constants.PIVOT_LIMIT_PORT);
         alignment = new Alignment();
     }
 
     public void callibrate() {
-        if (!lowerLimit.get()) {
-            sparkA.set(0);
-            sparkA.getEncoder().setPosition(0);
-        }
+        sparkA.set(0);
+        sparkA.getEncoder().setPosition(0);
     }
 
     /**
@@ -48,12 +46,15 @@ public class Pivot {
     public void run() {
         // DEBUGGING
         SmartDashboard.putNumber("PivotRevolution", getRevolution());
+        System.out.println(getRevolution());
         SmartDashboard.putBoolean("AtLowerLimit", !lowerLimit.get());
 
         if (Math.abs(Robot.operatorController.getY(Hand.kLeft)) > Constants.TRIGGER_THRESHOLD) {
             teleopRun();
         } else if (Robot.operatorController.getBButton()) {
             align();
+        } else if (Robot.operatorController.getXButton()) {
+            callibrate();
         } else {
             // DPad controls
             switch (Robot.operatorController.getPOV()) {
@@ -64,18 +65,24 @@ public class Pivot {
                 case 90:
                     // Right
                     setWheel();
+                    break;
                 case 180:
                     // Down
                     setTrench();
+                    break;
                 case 270:
                     // Left
                     setLine();
                     break;
                 default:
                     // Catches -1 or status when nothing is pressed on DPad
-                    sparkA.set(0);
+                    stop();
             }
         }
+    }
+
+    public void stop() {
+        sparkA.set(0);
     }
 
     public void teleopRun() {
@@ -93,25 +100,27 @@ public class Pivot {
     }
 
     public void setAgainst() {
-        setRevolution(0);
+        setRevolution(79);
     }
 
     public void setLine() {
-        setRevolution(0);
+        setRevolution(19.5);
     }
 
     public void setWheel() {
-        setRevolution(0);
+        setRevolution(24);
     }
 
     public void setTrench() {
-        setRevolution(0);
+        setRevolution(13.5);
     }
 
     public void setRevolution(double rev) {
+        double speed = Constants.PIVOT_AUTO_SPEED;
         int sign = -1;
         if (rev < getRevolution()) {
             sign *= -1;
+            speed -= 0.05;
         }
 
         // Prevent pivot to go below the lowerLimit switch
@@ -124,6 +133,6 @@ public class Pivot {
             sparkA.set(0);
             return;
         }
-        sparkA.set(sign * Constants.PIVOT_AUTO_SPEED);
+        sparkA.set(sign * speed);
     }
 }

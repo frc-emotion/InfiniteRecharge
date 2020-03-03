@@ -59,6 +59,8 @@ public class DriveTrain {
         drive = new DifferentialDrive(leftGroup, rightGroup);
 
         pidControl = new PIDControl(Constants.DRIVE_KP, Constants.DRIVE_KI, Constants.DRIVE_KP);
+        pidControl.setMaxSpeed(Constants.DRIVE_MAX_ROTATION_SPEED);
+        pidControl.setTolerance(Constants.DRIVE_ROTATION_TOLERANCE);
         alignment = new Alignment();
 
         // Store variables
@@ -80,7 +82,12 @@ public class DriveTrain {
 
     public void align() {
         if (alignment.targetFound()) {
-            drive.arcadeDrive(0, pidControl.getValue(0, alignment.getError()));
+            if (!pidControl.isInRange()) {
+                drive.arcadeDrive(0, pidControl.getValue(0, alignment.getError()));
+            }
+        }
+        if (pidControl.isInRange()) {
+            drive.arcadeDrive(0, 0);
         }
     }
     
