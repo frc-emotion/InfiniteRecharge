@@ -70,9 +70,9 @@ public class Constants {
     public static double RADIANS_TO_REV = 10; // NEED TO GET
 
     // Auto Constants
-    public static double AUTO_SHOOT_TIME = 5000; // Need to get
-    public static double AUTO_MOVE_TIME = 5000;
-    public static double DRIVE_FORWARD_SPEED = 0.2;
+    public static double AUTO_SHOOT_TIME = 2000; // Need to get
+    public static double AUTO_MOVE_TIME = 1500;
+    public static double DRIVE_FORWARD_SPEED = 0.5;
 
     // Climb Constants
     public static final int SCREW_TALON_L = 8;
