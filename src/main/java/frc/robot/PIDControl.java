@@ -129,12 +129,11 @@ public class PIDControl {
         if (prevTime != 0) {
             slope = (error - lastError) / (System.currentTimeMillis() - prevTime);
         }
-
         prevTime = System.currentTimeMillis();
         lastError = error;
+
         output = (error * kP + accumulator * kI + slope * kD) * scale;
-        SmartDashboard.putNumber("currentError", error);
-        SmartDashboard.putNumber("kdgain", slope * kD);
+
         if (Math.abs(output) < 0.02 && Math.abs(error) < (setpoint - setpoint * tolerance)) {
             inRange = true;
         } else {

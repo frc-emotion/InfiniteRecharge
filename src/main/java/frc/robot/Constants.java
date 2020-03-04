@@ -41,9 +41,9 @@ public class Constants {
     public static double DRIVE_REGULAR_POWER = 0.6;
     public static double DRIVE_TURBO_POWER = 0.8;
 
-    public static float DRIVE_KP = 0.4f;
+    public static float DRIVE_KP = 0.3f;
     public static float DRIVE_KI = 0;
-    public static float DRIVE_KD = 0.5f;
+    public static float DRIVE_KD = 0;
     public static double DRIVE_MAX_ROTATION_SPEED = 0.3;
     public static double DRIVE_ROTATION_TOLERANCE = 5;
 
@@ -70,7 +70,7 @@ public class Constants {
     public static double RADIANS_TO_REV = 10; // NEED TO GET
 
     // Auto Constants
-    public static double AUTO_SHOOT_TIME = 2000; // Need to get
+    public static double AUTO_SHOOT_TIME = 2000;
     public static double AUTO_MOVE_TIME = 1500;
     public static double DRIVE_FORWARD_SPEED = 0.5;
 
