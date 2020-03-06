@@ -31,7 +31,7 @@ public class Constants {
 
     // Motor Constants
     public static int NEO_MAX_CURRENT = 45;
-    public static int TALON_MAX_CURRENT = 75;
+    public static int TALON_MAX_CURRENT = 60;
 
     // Controller Constants
     public static double TRIGGER_THRESHOLD = 0.3;

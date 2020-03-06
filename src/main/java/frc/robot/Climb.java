@@ -25,7 +25,7 @@ public class Climb {
     double deadzone = 0.1;
 
     public Climb(XboxController operatorController) {
-        workShuffleBoard();
+        initShuffleBoard();
 
         upperClimbLimitSwitch = new DigitalInput(Constants.CLIMB_UPPER_LIMIT_PORT);
         lowerClimbLimitSwitch = new DigitalInput(Constants.CLIMB_LOWER_LIMIT_PORT);
@@ -79,15 +79,13 @@ public class Climb {
     }
     // }
 
+    public void initShuffleBoard() {
+        SmartDashboard.putNumber("Piston Position", pistonPos);
+    }
+
     public void workShuffleBoard() {
         SmartDashboard.putNumber("Piston Position", pistonPos);
-        /*
-         * SmartDashboard.putNumber("TalonL Current", screwTalonL.getStatorCurrent());
-         * SmartDashboard.putNumber("TalonR Current", screwTalonR.getStatorCurrent());
-         * SmartDashboard.putNumber("TalonL Voltage",
-         * screwTalonL.getMotorOutputVoltage());
-         * SmartDashboard.putNumber("TalonR Voltage",
-         * screwTalonR.getMotorOutputVoltage());
-         */
+        SmartDashboard.putNumber("TalonL Current", screwTalonL.getStatorCurrent());
+        SmartDashboard.putNumber("TalonR Current", screwTalonR.getStatorCurrent());
     }
 }
