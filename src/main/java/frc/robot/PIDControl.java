@@ -125,7 +125,7 @@ public class PIDControl {
 
         double slope = 0;
         if (prevTime != 0) {
-            slope = (error - lastError) / (System.currentTimeMillis() - prevTime);
+            slope = 1000 * ((error - lastError) / (System.currentTimeMillis() - prevTime));
         }
         prevTime = System.currentTimeMillis();
         lastError = error;

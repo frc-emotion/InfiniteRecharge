@@ -43,8 +43,8 @@ public class Constants {
 
     public static float DRIVE_KP = 0.08f;
     public static float DRIVE_KI = 0;
-    public static float DRIVE_KD = 0;
-    public static double DRIVE_MAX_ROTATION_SPEED = 0.3;
+    public static float DRIVE_KD = 0.04f;
+    public static double DRIVE_MAX_ROTATION_SPEED = 0.2;
     public static double DRIVE_ROTATION_TOLERANCE = 5;
 
     // Shooter Constants

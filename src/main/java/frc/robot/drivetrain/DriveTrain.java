@@ -88,12 +88,7 @@ public class DriveTrain {
 
     public void align() {
         if (alignment.targetFound()) {
-            if (!pidControl.isInRange()) {
-                drive.arcadeDrive(0, pidControl.getValue(0, alignment.getError()));
-            }
-        }
-        if (pidControl.isInRange()) {
-            stop();
+            drive.arcadeDrive(0, pidControl.getValue(0, alignment.getError()));
         }
     }
     
