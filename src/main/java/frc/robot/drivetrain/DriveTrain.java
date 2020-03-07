@@ -96,7 +96,7 @@ public class DriveTrain {
             stop();
         }
     }
-    
+
     public void reset() {
         pidControl.cleanup();
     }

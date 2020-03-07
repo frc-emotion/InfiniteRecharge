@@ -26,7 +26,7 @@ public class Intake {
     private DoubleSolenoid intakeSolenoid;
 
     private boolean intake;
-    private double prevTime, stallTime;
+    private double startTime, stallTime;
 
     public Intake() {
         // Intialize motors
@@ -53,7 +53,7 @@ public class Intake {
         intakeSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_INTAKE_PORT[0], Constants.PNEUMATIC_INTAKE_PORT[1]);
 
         intake = false;
-        prevTime = stallTime = 0;
+        startTime = stallTime = 0;
     }
 
     public void run() {
@@ -69,18 +69,17 @@ public class Intake {
 
         if (Robot.operatorController.getBumper(Hand.kLeft)) {
             tubeIntake();
-        } else if (Robot.operatorController.getTriggerAxis(Hand.kLeft) >= Constants.TRIGGER_THRESHOLD || Robot.operatorController.getTriggerAxis(Hand.kRight) >= Constants.TRIGGER_THRESHOLD || Robot.operatorController.getBButton()) {
+        } else if (Robot.operatorController.getTriggerAxis(Hand.kLeft) >= Constants.TRIGGER_THRESHOLD
+                || Robot.operatorController.getTriggerAxis(Hand.kRight) >= Constants.TRIGGER_THRESHOLD) {
             tubeShoot();
         } else {
             tubeOff();
         }
 
         if (Robot.operatorController.getTriggerAxis(Hand.kLeft) >= Constants.TRIGGER_THRESHOLD) {
-            intakeOn();
+            intake();
         } else if (Robot.operatorController.getBumper(Hand.kRight)) {
             intakeReverse();
-        } else if (Robot.operatorController.getBButton()) {
-            intakeAlternative();
         } else {
             intakeOff();
         }
@@ -111,34 +110,18 @@ public class Intake {
     }
 
     public void intake() {
-        if (prevTime == 0) {
-            prevTime = System.currentTimeMillis();
-        }
-
-        if (System.currentTimeMillis() - prevTime  < Constants.INTAKE_PERIOD_TIME) {
+        if (System.currentTimeMillis() - stallTime > Constants.INTAKE_STALL_TIME
+                || System.currentTimeMillis() - startTime > Constants.INTAKE_MAX_STALL_TIME) {
             intakeOn();
+            startTime = 0;
         } else {
-            if (stallTime == 0) {
-                stallTime = System.currentTimeMillis();
-            }
-            if (System.currentTimeMillis() - stallTime < Constants.INTAKE_STALL_TIME) {
-                intakeOff();
-            } else {
-                prevTime = 0;
-                stallTime = 0;
-            }
-        }
-    }
-
-    public void intakeAlternative() {
-        System.out.println(-sparkB.getEncoder().getVelocity());
-        if (System.currentTimeMillis() - stallTime < Constants.INTAKE_STALL_TIME) {
             intakeOff();
-        } else {
-            intakeOn();
         }
 
         if (-sparkB.getEncoder().getVelocity() < Constants.INTAKE_JAMMED_SPEED) {
+            if (startTime == 0) {
+                startTime = System.currentTimeMillis();
+            }
             stallTime = System.currentTimeMillis();
         }
     }
@@ -154,7 +137,7 @@ public class Intake {
     }
 
     public void intakeOff() {
-        prevTime = stallTime = 0;
+        startTime = stallTime = 0;
         sparkA.set(0);
         sparkB.set(0);
     }
