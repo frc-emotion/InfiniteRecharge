@@ -116,6 +116,10 @@ public class Pivot {
         setRevolution(13.7);
     }
 
+    public boolean atAlign() {
+        return atRev(alignment.getAngle()*Constants.RADIANS_TO_REV);
+    }
+
     public boolean atAgainst() {
         return atRev(79);
     }

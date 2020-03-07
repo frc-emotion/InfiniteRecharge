@@ -38,10 +38,10 @@ public class Constants {
 
     // Drivetrain Constants
     public static double DRIVE_SLOW_POWER = 0.4;
-    public static double DRIVE_REGULAR_POWER = 0.6;
+    public static double DRIVE_REGULAR_POWER = 0.65;
     public static double DRIVE_TURBO_POWER = 0.8;
 
-    public static float DRIVE_KP = 0.3f;
+    public static float DRIVE_KP = 0.08f;
     public static float DRIVE_KI = 0;
     public static float DRIVE_KD = 0;
     public static double DRIVE_MAX_ROTATION_SPEED = 0.3;
@@ -57,7 +57,7 @@ public class Constants {
     public static double SHOOTER_MAX_VELOCITY = 10; // Meters/second
 
     // Intake Constants
-    public static double INTAKE_INTAKE_SPEED = 0.65;
+    public static double INTAKE_INTAKE_SPEED = 0.8;
     public static double INTAKE_TUBE_SPEED = 0.7;
     public static double INTAKE_SHOOT_SPEED = 1;
 

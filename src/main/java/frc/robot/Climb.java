@@ -38,6 +38,7 @@ public class Climb {
         climbGroup = new SpeedControllerGroup(screwTalonL, screwTalonR);
 
         pistonL = new DoubleSolenoid(Constants.PISTONL_FWD, Constants.PISTONL_BKWD);
+        pistonL.set(Value.kReverse);
 
         screwTalonL.configContinuousCurrentLimit(Constants.TALON_MAX_CURRENT);
 

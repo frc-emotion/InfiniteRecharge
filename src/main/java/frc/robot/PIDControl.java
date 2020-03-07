@@ -1,8 +1,6 @@
 package frc.robot;
 // TODO: add sd support and inRange indicator
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 /**
  * Custom PID controller class to make pid work! Configurable items: p, i, d,
  * scale, tolerance This class isn't for the most accurate pid in the world. Its

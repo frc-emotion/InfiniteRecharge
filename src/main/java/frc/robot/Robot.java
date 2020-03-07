@@ -25,11 +25,11 @@ public class Robot extends TimedRobot {
   public static XboxController driverController;
   public static XboxController operatorController;
 
-  private Climb climb;
-  private DriveTrain drivetrain;
-  private Intake intake;
-  private Pivot pivot;
-  private Shooter shooter;
+  public static Climb climb;
+  public static DriveTrain drivetrain;
+  public static Intake intake;
+  public static Pivot pivot;
+  public static Shooter shooter;
 
   private boolean pivotAligned;
   private double startTime, moveTime;

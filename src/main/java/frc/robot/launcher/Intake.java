@@ -84,11 +84,11 @@ public class Intake {
     }
 
     public void intakeDown() {
-        intakeSolenoid.set(Value.kReverse);
+        intakeSolenoid.set(Value.kForward);
     }
 
     public void intakeUp() {
-        intakeSolenoid.set(Value.kForward);
+        intakeSolenoid.set(Value.kReverse);
     }
 
     public void tubeIntake() {
