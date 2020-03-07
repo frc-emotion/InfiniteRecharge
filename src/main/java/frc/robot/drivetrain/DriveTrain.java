@@ -148,15 +148,12 @@ public class DriveTrain {
         return null;
     }
 
-    public DifferentialDrive getDrive() {
-        return drive;
-    }
 
     /**
      * Function that should be called by teleopPeriodic
      */
 
-    public void autoChoices(char pos) {
+    /*public void autoChoices(char pos) {
 
         if (tester == true) {
             curTime = System.currentTimeMillis();
@@ -181,7 +178,7 @@ public class DriveTrain {
             drive.tankDrive(0, 0);
         }
 
-    }
+    }*/
 
     public void run() {
 
@@ -211,13 +208,13 @@ public class DriveTrain {
 
     public void runPathFinder() {
 
-        int pathChoice = pathChoices.getSelected().intValue();
-
+        //int pathChoice = pathChoices.getSelected().intValue();
+        int pathChoice = 0;
         String pathName = "";
 
         switch (pathChoice) {
             case 0:
-                pathName = "slowStraight.pf1";
+                pathName = "BS3_SH_lowfar.pf1";
                 break;
             case 1:
                 pathName = "RS1-B2.wpilib";
@@ -255,6 +252,10 @@ public class DriveTrain {
                 e.printStackTrace();
             }
         }
+    }
+
+    public DifferentialDrive getDrive() {
+        return drive;
     }
 
     private void runTankDrive() {
@@ -318,10 +319,10 @@ public class DriveTrain {
         SmartDashboard.putBoolean("Pathfinder Job", false);
 
         pathChoices = new SendableChooser<Integer>();
-        pathChoices.setDefaultOption("slowStraight", 0);
+        pathChoices.setDefaultOption("BS3_SH_lowfar.pf1", 0);
 
         pathChoices.addOption("RS1-B2", 1);
-        pathChoices.addOption("slowStraight", 0);
+        pathChoices.addOption("BS3_SH_lowfar.pf1", 0);
         pathChoices.addOption("Straight", 2);
         SmartDashboard.putData("PathFinder Choices", pathChoices);
     }

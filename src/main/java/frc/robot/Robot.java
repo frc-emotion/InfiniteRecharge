@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
   //private AutoOptions auto;
   private Climb climb;
   private boolean num = true;
+  public boolean autoDone = false;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -126,11 +127,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    //drive.runPathFinderChoices();
-    char pos = 'm'; //temp
-    //add boolean for when shot
-    drive.autoChoices(pos);
-  
+    if(!autoDone) {
+    drive.runPathFinderChoices();
+    autoDone = true;
+    }
     shooter.update();
 
     shooter.dashboardRun();
