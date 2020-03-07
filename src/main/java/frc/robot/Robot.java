@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   public static Shooter shooter;
 
   private boolean pivotAligned;
-  private double startTime, moveTime;
+  private double shootThreeTime, shootSixTime, rotateTime, alignTime, backwardTime, forwardTime;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -78,8 +78,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     pivotAligned = false;
-    startTime = 0;
-    moveTime = 0;
+    shootThreeTime = shootSixTime = rotateTime = alignTime = backwardTime = forwardTime = 0;
   }
 
   /**
@@ -87,19 +86,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    // 3 Ball basics
     pivotAligned = pivot.atLine();
     if (!pivotAligned) {
       pivot.setLine();
       return;
     }
-    
+
     pivot.stop();
 
-    if (startTime == 0) {
-      startTime = System.currentTimeMillis();
+    if (shootThreeTime == 0) {
+      shootThreeTime = System.currentTimeMillis();
     }
 
-    if (System.currentTimeMillis() - startTime < Constants.AUTO_SHOOT_TIME) {
+    if (System.currentTimeMillis() - shootThreeTime < Constants.AUTO_SHOOT_TIME) {
       shooter.shoot();
       intake.tubeShoot();
       return;
@@ -108,16 +108,83 @@ public class Robot extends TimedRobot {
     shooter.stop();
     intake.tubeOff();
 
-    if (moveTime == 0) {
-      moveTime = System.currentTimeMillis();
+    pivotAligned = pivot.atBottom();
+    if (!pivotAligned) {
+      pivot.setBottom();
+      return;
     }
 
-    if (System.currentTimeMillis() - moveTime < Constants.AUTO_MOVE_TIME) {
-      drivetrain.moveForward();
+    pivot.stop();
+
+    // Assuming we always start in the rightmost position/ trench
+    if (alignTime == 0) {
+      alignTime = System.currentTimeMillis();
+    }
+
+    if (System.currentTimeMillis() - alignTime < Constants.AUTO_ALIGN_TIME) {
+      drivetrain.arcadeDrive(0, -Constants.AUTO_ROTATE_SPEED);
       return;
     }
 
     drivetrain.stop();
+
+    if (backwardTime == 0) {
+      backwardTime = System.currentTimeMillis();
+    }
+
+    if (System.currentTimeMillis() - backwardTime < Constants.AUTO_BACKWARD_TIME) {
+      drivetrain.arcadeDrive(-Constants.AUTO_MOVE_SPEED, 0);
+      intake.intakeDown();
+      intake.intake();
+      intake.tubeShoot();
+      return;
+    }
+
+    intake.intakeUp();
+    intake.intakeOff();
+    intake.tubeOff();
+    drivetrain.stop();
+
+    if (forwardTime == 0) {
+      forwardTime = System.currentTimeMillis();
+    }
+
+    if (System.currentTimeMillis() - forwardTime < Constants.AUTO_FORWARD_TIME) {
+      drivetrain.arcadeDrive(Constants.AUTO_MOVE_SPEED, 0);
+      return;
+    }
+
+    if (rotateTime == 0) {
+      rotateTime = System.currentTimeMillis();
+    }
+
+    if (System.currentTimeMillis() - rotateTime < Constants.AUTO_ROTATE_TIME) {
+      drivetrain.arcadeDrive(0, Constants.AUTO_ROTATE_SPEED);
+      return;
+    }
+
+    pivotAligned = pivot.atTrench();
+    if (!pivotAligned) {
+      pivot.setTrench();
+      return;
+    }
+
+    pivot.stop();
+
+    drivetrain.stop();
+
+    if (shootSixTime == 0) {
+      shootSixTime = System.currentTimeMillis();
+    }
+
+    if (System.currentTimeMillis() - shootSixTime < Constants.AUTO_SHOOT_TIME) {
+      shooter.shoot();
+      intake.tubeShoot();
+      return;
+    }
+
+    shooter.stop();
+    intake.tubeOff();
   }
 
   /**

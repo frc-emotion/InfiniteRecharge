@@ -53,7 +53,7 @@ public class Pivot {
         if (Math.abs(Robot.operatorController.getY(Hand.kLeft)) > Constants.TRIGGER_THRESHOLD) {
             teleopRun();
         } else if (Robot.operatorController.getBButton()) {
-            align();
+            //align();
         } else if (Robot.operatorController.getXButton()) {
             callibrate();
         } else {
@@ -116,6 +116,10 @@ public class Pivot {
         setRevolution(13.7);
     }
 
+    public void setBottom() {
+        setRevolution(0);
+    }
+
     public boolean atAlign() {
         return atRev(alignment.getAngle()*Constants.RADIANS_TO_REV);
     }
@@ -134,6 +138,10 @@ public class Pivot {
 
     public boolean atTrench() {
         return atRev(13.5);
+    }
+
+    public boolean atBottom() {
+        return atRev(0);
     }
 
     public void setRevolution(double rev) {

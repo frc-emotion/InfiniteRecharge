@@ -61,6 +61,10 @@ public class Constants {
     public static double INTAKE_TUBE_SPEED = 0.7;
     public static double INTAKE_SHOOT_SPEED = 1;
 
+    public static double INTAKE_PERIOD_TIME = 500;
+    public static double INTAKE_STALL_TIME = 100;
+    public static double INTAKE_JAMMED_SPEED = 200;
+
     // Pivot Constants
     public static double PIVOT_TELEOP_SPEED = 0.25;
     public static double PIVOT_AUTO_SPEED = 0.2;
@@ -71,8 +75,12 @@ public class Constants {
 
     // Auto Constants
     public static double AUTO_SHOOT_TIME = 2000;
-    public static double AUTO_MOVE_TIME = 1500;
-    public static double DRIVE_FORWARD_SPEED = 0.5;
+    public static double AUTO_MOVE_SPEED = 0.5;
+    public static double AUTO_ROTATE_SPEED = 0.2;
+    public static double AUTO_ROTATE_TIME = 500;
+    public static double AUTO_FORWARD_TIME = 1500;
+    public static double AUTO_BACKWARD_TIME = 4000;
+    public static double AUTO_ALIGN_TIME = 400;
 
     // Climb Constants
     public static final int SCREW_TALON_L = 8;

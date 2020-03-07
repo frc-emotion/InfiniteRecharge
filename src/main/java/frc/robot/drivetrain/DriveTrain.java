@@ -78,8 +78,8 @@ public class DriveTrain {
         }
     }
 
-    public void moveForward() {
-        drive.arcadeDrive(Constants.DRIVE_FORWARD_SPEED, 0);
+    public void arcadeDrive(double speed, double rotation) {
+        drive.arcadeDrive(speed, rotation);
     }
 
     public void stop() {
