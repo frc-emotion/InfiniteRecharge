@@ -39,7 +39,7 @@ public class Constants {
     // Drivetrain Constants
     public static double DRIVE_SLOW_POWER = 0.4;
     public static double DRIVE_REGULAR_POWER = 0.65;
-    public static double DRIVE_TURBO_POWER = 0.8;
+    public static double DRIVE_TURBO_POWER = 0.9;
 
     public static float DRIVE_KP = 0.08f;
     public static float DRIVE_KI = 0;
