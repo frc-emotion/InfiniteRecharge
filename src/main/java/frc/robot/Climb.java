@@ -72,7 +72,7 @@ public class Climb {
          * if((upperClimbLimitSwitch.get() && hand > 0) || (lowerClimbLimitSwitch.get()
          * && hand<0)) { climbGroup.set(0); } else {
          */
-        if (Math.abs(operatorController.getY(Hand.kRight)) >= deadzone) {
+        if (Math.abs(operatorController.getY(Hand.kRight)) >= deadzone && pistonPos == 1) {
             climbGroup.set(hand * Constants.SCREW_SPEED);
         } else {
             climbGroup.set(0);

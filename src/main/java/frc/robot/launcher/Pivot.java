@@ -43,13 +43,11 @@ public class Pivot {
     }
 
     public boolean atRev(double angle) {
-        return Math.abs(angle-getRevolution()) < Constants.PIVOT_THRESHOLD;
+        return Math.abs(angle - getRevolution()) < Constants.PIVOT_THRESHOLD;
     }
 
     public void run() {
-        // DEBUGGING
-        // System.out.println(getRevolution());
-
+        System.out.println(getRevolution());
         if (Math.abs(Robot.operatorController.getY(Hand.kLeft)) > Constants.TRIGGER_THRESHOLD) {
             teleopRun();
         } else if (Robot.operatorController.getBButton()) {
@@ -93,11 +91,19 @@ public class Pivot {
             return;
         }
 
+        if (getRevolution() < Constants.PIVOT_ZERO_THRESHOLD && Robot.operatorController.getY(Hand.kLeft) > 0) {
+            sparkA.set(Robot.operatorController.getY(Hand.kLeft) * Constants.PIVOT_ZERO_SPEED);
+            return;
+        }
+
+        if (getRevolution() > Constants.PIVOT_MAX_REVOLUTION && Robot.operatorController.getY(Hand.kLeft) < 0) {
+            return;
+        }
         sparkA.set(Robot.operatorController.getY(Hand.kLeft) * Constants.PIVOT_TELEOP_SPEED);
     }
 
     public void align() {
-        setRevolution(alignment.getAngle()*Constants.RADIANS_TO_REV);
+        setRevolution(alignment.getAngle() * Constants.RADIANS_TO_REV);
     }
 
     public void setAgainst() {
@@ -121,7 +127,7 @@ public class Pivot {
     }
 
     public boolean atAlign() {
-        return atRev(alignment.getAngle()*Constants.RADIANS_TO_REV);
+        return atRev(alignment.getAngle() * Constants.RADIANS_TO_REV);
     }
 
     public boolean atAgainst() {
@@ -129,7 +135,7 @@ public class Pivot {
     }
 
     public boolean atLine() {
-        return atRev(19.5);
+        return atRev(23.58);
     }
 
     public boolean atWheel() {
@@ -137,7 +143,7 @@ public class Pivot {
     }
 
     public boolean atTrench() {
-        return atRev(13.5);
+        return atRev(12.13);
     }
 
     public boolean atBottom() {

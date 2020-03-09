@@ -45,8 +45,8 @@ public class Intake {
         };
 
         for (CANSparkMax spark : shooterSparkMax) {
-            spark.setSmartCurrentLimit(Constants.NEO_MAX_CURRENT);
-            spark.setSecondaryCurrentLimit(Constants.NEO_MAX_CURRENT);
+            spark.setSmartCurrentLimit(35);
+            spark.setSecondaryCurrentLimit(35);
             spark.setIdleMode(IdleMode.kBrake);
         }
 
@@ -72,6 +72,8 @@ public class Intake {
         } else if (Robot.operatorController.getTriggerAxis(Hand.kLeft) >= Constants.TRIGGER_THRESHOLD
                 || Robot.operatorController.getTriggerAxis(Hand.kRight) >= Constants.TRIGGER_THRESHOLD) {
             tubeShoot();
+        } else if (Robot.operatorController.getBButton()) {
+            tubeReverse();
         } else {
             tubeOff();
         }
@@ -102,6 +104,11 @@ public class Intake {
     public void tubeShoot() {
         sparkC.set(Constants.INTAKE_SHOOT_SPEED);
         sparkD.set(-Constants.INTAKE_SHOOT_SPEED);
+    }
+
+    public void tubeReverse() {
+        sparkC.set(-Constants.INTAKE_TUBE_SPEED);
+        sparkD.set(Constants.INTAKE_TUBE_SPEED);
     }
 
     public void tubeOff() {
