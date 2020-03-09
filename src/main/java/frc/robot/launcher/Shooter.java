@@ -53,6 +53,10 @@ public class Shooter {
         startTime = 0;
     }
 
+    public double getRPM() {
+        return sparkA.getEncoder().getVelocity();
+    }
+
     /**
      * Call periodically in teleopPeriodic
      */
@@ -100,8 +104,13 @@ public class Shooter {
      * Spins motors at constant power
      */
     public void spinUp() {
-        sparkA.set(Constants.SHOOTER_SHOOT_SPEED);
-        sparkB.set(-Constants.SHOOTER_SHOOT_SPEED);
+        if (getRPM() - Constants.SHOOTER_TARGET_RPM > Constants.SHOOTER_THRESHOLD_RPM) {
+            sparkA.set(Constants.SHOOTER_LOWER_SPEED);
+            sparkB.set(-Constants.SHOOTER_LOWER_SPEED);
+        } else {
+            sparkA.set(Constants.SHOOTER_UPPER_SPEED);
+            sparkB.set(-Constants.SHOOTER_UPPER_SPEED);
+        }
     }
 
     /**
