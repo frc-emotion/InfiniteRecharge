@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.PIDControl;
 import frc.robot.Robot;
@@ -22,15 +23,24 @@ public class Pivot {
     private CANSparkMax sparkA; // Spark to control pivot location with screw mechanism
     private Alignment alignment; // Alignment object
     private DigitalInput lowerLimit; // lowerLimit is active low
+<<<<<<< HEAD
     private PIDControl pidControl;
+=======
+    private boolean usingMacro = false;
+>>>>>>> f324c34fd8d83a147a94915d97f2d4b83176d1ae
 
     public Pivot() {
         sparkA = new CANSparkMax(Constants.PIVOT_PORT, MotorType.kBrushless);
         lowerLimit = new DigitalInput(Constants.PIVOT_LIMIT_PORT);
         alignment = new Alignment();
+<<<<<<< HEAD
         pidControl = new PIDControl(Constants.PIVOT_KP, Constants.PIVOT_KI, Constants.PIVOT_KD);
         pidControl.setTolerance(Constants.PIVOT_THRESHOLD);
         pidControl.setMaxSpeed(Constants.PIVOT_AUTO_SPEED);
+=======
+
+        workShuffleBoard();
+>>>>>>> f324c34fd8d83a147a94915d97f2d4b83176d1ae
     }
 
     public void callibrate() {
@@ -52,6 +62,7 @@ public class Pivot {
     }
 
     public void run() {
+        workShuffleBoard();
         System.out.println(getRevolution());
         if (Math.abs(Robot.operatorController.getY(Hand.kLeft)) > Constants.TRIGGER_THRESHOLD) {
             teleopRun();
@@ -64,28 +75,34 @@ public class Pivot {
             switch (Robot.operatorController.getPOV()) {
                 case 0:
                     // Up
+                    usingMacro = true;
                     setAgainst();
                     break;
                 case 90:
                     // Right
+                    usingMacro = true;
                     setWheel();
                     break;
                 case 180:
                     // Down
+                    usingMacro = true;
                     setTrench();
                     break;
                 case 270:
                     // Left
+                    usingMacro = true;
                     setLine();
                     break;
                 default:
                     // Catches -1 or status when nothing is pressed on DPad
                     stop();
+                    
             }
         }
     }
 
     public void stop() {
+        usingMacro = false;
         sparkA.set(0);
         pidControl.cleanup();
     }
@@ -166,5 +183,10 @@ public class Pivot {
         }
 
         sparkA.set(speed);
+    }
+
+    public void workShuffleBoard() {
+        SmartDashboard.putNumber("Current Revolutions", getRevolution());
+
     }
 }
