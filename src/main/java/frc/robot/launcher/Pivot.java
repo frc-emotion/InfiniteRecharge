@@ -111,7 +111,7 @@ public class Pivot {
     }
 
     public void setLine() {
-        setRevolution(19.5);
+        setRevolution(23.78);
     }
 
     public void setWheel() {
@@ -135,7 +135,7 @@ public class Pivot {
     }
 
     public boolean atLine() {
-        return atRev(23.58);
+        return atRev(24.78);
     }
 
     public boolean atWheel() {
@@ -155,6 +155,10 @@ public class Pivot {
         int sign = -1;
         if (rev < getRevolution()) {
             sign *= -1;
+            speed -= 0.05;
+        }
+
+        if (rev < Constants.PIVOT_SLOW_MACRO) {
             speed -= 0.05;
         }
 
