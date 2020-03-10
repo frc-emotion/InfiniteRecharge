@@ -48,9 +48,9 @@ public class Constants {
     public static double DRIVE_ROTATION_TOLERANCE = 5;
 
     // Shooter Constants
-    public static double SHOOTER_LOWER_SPEED = 0.7;
-    public static double SHOOTER_UPPER_SPEED = 0.9;
-    public static double SHOOTER_TARGET_RPM = 4950;
+    public static double SHOOTER_LOWER_SPEED = 0.8;
+    public static double SHOOTER_UPPER_SPEED = 1;
+    public static double SHOOTER_TARGET_RPM = 5150;
     public static double SHOOTER_THRESHOLD_RPM = 50;
 
     public static double SHOOTER_TURN_SPEED = 0.2;
@@ -74,9 +74,12 @@ public class Constants {
     public static double PIVOT_AUTO_SPEED = 0.2;
     public static double PIVOT_ZERO_SPEED = 0.1;
 
+    public static float PIVOT_KP = 0.05f;
+    public static float PIVOT_KI = 0;
+    public static float PIVOT_KD = 0;
+
     public static double PIVOT_ZERO_THRESHOLD = 5;
     public static double PIVOT_MAX_REVOLUTION = 80;
-    public static double PIVOT_SLOW_MACRO = 1;
     public static double PIVOT_THRESHOLD = 0.4;
 
     public static double RADIANS_TO_REV = 10; // NEED TO GET

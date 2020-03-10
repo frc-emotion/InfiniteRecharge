@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.robot.Constants;
+import frc.robot.PIDControl;
 import frc.robot.Robot;
 
 /**
@@ -21,11 +22,15 @@ public class Pivot {
     private CANSparkMax sparkA; // Spark to control pivot location with screw mechanism
     private Alignment alignment; // Alignment object
     private DigitalInput lowerLimit; // lowerLimit is active low
+    private PIDControl pidControl;
 
     public Pivot() {
         sparkA = new CANSparkMax(Constants.PIVOT_PORT, MotorType.kBrushless);
         lowerLimit = new DigitalInput(Constants.PIVOT_LIMIT_PORT);
         alignment = new Alignment();
+        pidControl = new PIDControl(Constants.PIVOT_KP, Constants.PIVOT_KI, Constants.PIVOT_KD);
+        pidControl.setTolerance(Constants.PIVOT_THRESHOLD);
+        pidControl.setMaxSpeed(Constants.PIVOT_AUTO_SPEED);
     }
 
     public void callibrate() {
@@ -51,7 +56,7 @@ public class Pivot {
         if (Math.abs(Robot.operatorController.getY(Hand.kLeft)) > Constants.TRIGGER_THRESHOLD) {
             teleopRun();
         } else if (Robot.operatorController.getBButton()) {
-            //align();
+            // align();
         } else if (Robot.operatorController.getXButton()) {
             callibrate();
         } else {
@@ -82,6 +87,7 @@ public class Pivot {
 
     public void stop() {
         sparkA.set(0);
+        pidControl.cleanup();
     }
 
     public void teleopRun() {
@@ -151,27 +157,14 @@ public class Pivot {
     }
 
     public void setRevolution(double rev) {
-        double speed = Constants.PIVOT_AUTO_SPEED;
-        int sign = -1;
-        if (rev < getRevolution()) {
-            sign *= -1;
-            speed -= 0.05;
-        }
-
-        if (rev < Constants.PIVOT_SLOW_MACRO) {
-            speed -= 0.05;
-        }
+        double speed = -pidControl.getValue(rev, getRevolution());
 
         // Prevent pivot to go below the lowerLimit switch
-        if (!lowerLimit.get() && sign > 0) {
+        if (!lowerLimit.get() && speed > 0) {
             callibrate();
             return;
         }
 
-        if (Math.abs(getRevolution() - rev) < Constants.PIVOT_THRESHOLD) {
-            sparkA.set(0);
-            return;
-        }
-        sparkA.set(sign * speed);
+        sparkA.set(speed);
     }
 }
