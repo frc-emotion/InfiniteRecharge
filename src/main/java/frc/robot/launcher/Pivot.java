@@ -21,6 +21,7 @@ public class Pivot {
     private CANSparkMax sparkA; // Spark to control pivot location with screw mechanism
     private Alignment alignment; // Alignment object
     private DigitalInput lowerLimit; // lowerLimit is active low
+    private boolean usingMacro = false;
 
     public Pivot() {
         sparkA = new CANSparkMax(Constants.PIVOT_PORT, MotorType.kBrushless);
@@ -59,18 +60,22 @@ public class Pivot {
             switch (Robot.operatorController.getPOV()) {
                 case 0:
                     // Up
+                    usingMacro = true;
                     setAgainst();
                     break;
                 case 90:
                     // Right
+                    usingMacro = true;
                     setWheel();
                     break;
                 case 180:
                     // Down
+                    usingMacro = true;
                     setTrench();
                     break;
                 case 270:
                     // Left
+                    usingMacro = true;
                     setLine();
                     break;
                 default:
@@ -159,6 +164,10 @@ public class Pivot {
         }
 
         if (rev < Constants.PIVOT_SLOW_MACRO) {
+            speed -= 0.05;
+        }
+        //slow down if using macro
+        if (rev - getRevolution() < Constants.PIVOT_SLOW_MACRO && usingMacro) {
             speed -= 0.05;
         }
 
