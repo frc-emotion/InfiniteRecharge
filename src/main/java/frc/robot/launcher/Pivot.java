@@ -81,11 +81,13 @@ public class Pivot {
                 default:
                     // Catches -1 or status when nothing is pressed on DPad
                     stop();
+                    
             }
         }
     }
 
     public void stop() {
+        usingMacro = false;
         sparkA.set(0);
     }
 
