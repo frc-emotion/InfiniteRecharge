@@ -41,18 +41,19 @@ public class Constants {
     public static double DRIVE_REGULAR_POWER = 0.7;
     public static double DRIVE_TURBO_POWER = 0.9;
 
+    // Alignment Constants
     public static float DRIVE_KP = 0.1f;
     public static float DRIVE_KI = 0;
     public static float DRIVE_KD = 0.03f;
     public static double DRIVE_MAX_ROTATION_SPEED = 0.2;
-    public static double DRIVE_ROTATION_TOLERANCE = 5;
+    public static double DRIVE_ROTATION_TOLERANCE = 1;
 
     // Shooter Constants
     public static float SHOOTER_KP = 0.8f;
     public static float SHOOTER_KI = 0;
-    public static float SHOOTER_KD = 0.3f;
-    public static double SHOOTER_TARGET_RPM = 5150;
-    public static double SHOOTER_THRESHOLD_RPM = 50;
+    public static float SHOOTER_KD = 0.35f;
+    public static double SHOOTER_TARGET_RPM = 5100;
+    public static double SHOOTER_THRESHOLD_RPM = 100;
 
     public static double SHOOTER_TURN_SPEED = 0.2;
 
@@ -77,11 +78,11 @@ public class Constants {
 
     public static float PIVOT_KP = 0.05f;
     public static float PIVOT_KI = 0;
-    public static float PIVOT_KD = 0;
+    public static float PIVOT_KD = 0.01f;
 
     public static double PIVOT_ZERO_THRESHOLD = 5;
     public static double PIVOT_MAX_REVOLUTION = 80;
-    public static double PIVOT_THRESHOLD = 0.4;
+    public static double PIVOT_THRESHOLD = 0.3;
 
     public static double RADIANS_TO_REV = 10; // NEED TO GET
 

@@ -59,6 +59,7 @@ public class DriveTrain {
         pidControl = new PIDControl(Constants.DRIVE_KP, Constants.DRIVE_KI, Constants.DRIVE_KP);
         pidControl.setMaxSpeed(Constants.DRIVE_MAX_ROTATION_SPEED);
         pidControl.setTolerance(Constants.DRIVE_ROTATION_TOLERANCE);
+
         alignment = new Alignment();
 
         // Store variables

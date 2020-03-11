@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.PIDControl;
 import frc.robot.Robot;
@@ -29,6 +28,7 @@ public class Pivot {
         sparkA = new CANSparkMax(Constants.PIVOT_PORT, MotorType.kBrushless);
         lowerLimit = new DigitalInput(Constants.PIVOT_LIMIT_PORT);
         alignment = new Alignment();
+
         pidControl = new PIDControl(Constants.PIVOT_KP, Constants.PIVOT_KI, Constants.PIVOT_KD);
         pidControl.setTolerance(Constants.PIVOT_THRESHOLD);
         pidControl.setMaxSpeed(Constants.PIVOT_AUTO_SPEED);
@@ -45,8 +45,18 @@ public class Pivot {
         return -sparkA.getEncoder().getPosition();
     }
 
-    public boolean atRev(double angle) {
-        return Math.abs(angle - getRevolution()) < Constants.PIVOT_THRESHOLD;
+    /**
+     * Returns true if the current revolution is roughly the same as the provided
+     * revolution
+     * 
+     * <p>
+     * Note: has a threshold to determine if in range
+     * 
+     * @param revolution
+     * @return
+     */
+    public boolean atRev(double revolution) {
+        return Math.abs(revolution - getRevolution()) < Constants.PIVOT_THRESHOLD;
     }
 
     public void run() {
@@ -81,26 +91,35 @@ public class Pivot {
         }
     }
 
+    /**
+     * Stop motor and reset macros
+     */
     public void stop() {
         sparkA.set(0);
         pidControl.cleanup();
     }
 
+    /**
+     * Converts joystick controls to pivot speed
+     */
     public void teleopRun() {
-        // Prevent pivot to go below the lowerLimit switch
+        // Prevent pivot from going below the lowerLimit switch
         if (!lowerLimit.get() && Robot.operatorController.getY(Hand.kLeft) > 0) {
             stop();
             return;
         }
 
+        // Slows down pivot speed as it aproaches the lowest position
         if (getRevolution() < Constants.PIVOT_ZERO_THRESHOLD && Robot.operatorController.getY(Hand.kLeft) > 0) {
             sparkA.set(Robot.operatorController.getY(Hand.kLeft) * Constants.PIVOT_ZERO_SPEED);
             return;
         }
 
+        // Prevents pivot from going above the max position
         if (getRevolution() > Constants.PIVOT_MAX_REVOLUTION && Robot.operatorController.getY(Hand.kLeft) < 0) {
             return;
         }
+
         sparkA.set(Robot.operatorController.getY(Hand.kLeft) * Constants.PIVOT_TELEOP_SPEED);
     }
 
@@ -152,6 +171,9 @@ public class Pivot {
         return atRev(0);
     }
 
+    /**
+     * Uses PID to go to the desired revolution
+     */
     public void setRevolution(double rev) {
         double speed = -pidControl.getValue(rev, getRevolution());
 

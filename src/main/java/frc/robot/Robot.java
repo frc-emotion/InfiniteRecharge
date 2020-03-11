@@ -77,7 +77,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    pivotAligned = false;
     shootThreeTime = shootSixTime = rotateTime = alignTime = backwardTime = forwardTime = 0;
     line = rotate = align = backward = forward = trench = false;
   }

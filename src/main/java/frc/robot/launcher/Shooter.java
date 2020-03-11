@@ -87,6 +87,8 @@ public class Shooter {
         }
         spinUp();
 
+        // Wait for .7 of a second before opening hook. Might change to activate based
+        // on current RPM
         if (System.currentTimeMillis() - startTime > Constants.SHOOTER_SHOOT_TIME) {
             open();
         }
@@ -107,13 +109,13 @@ public class Shooter {
     }
 
     /**
-     * Spins motors at constant power
+     * Uses PID to maintain the shooter rpm at 5100 rpm
      */
     public void spinUp() {
         double value = pidControl.getValue(Constants.SHOOTER_TARGET_RPM, getRPM());
         sparkA.set(value);
         sparkB.set(-value);
-    
+
     }
 
     /**
@@ -135,17 +137,16 @@ public class Shooter {
     /**
      * Calls turn until the wheel completes 2-3 rotations
      */
-    public boolean rotate() {
+    public void rotate() {
         if (startTime == 0) {
             startTime = System.currentTimeMillis();
         }
 
         if (System.currentTimeMillis() - startTime > Constants.SHOOTER_ROTATE_TIME) {
             spinDown();
-            return true;
+            return;
         }
         turn();
-        return false;
     }
 
     /**
