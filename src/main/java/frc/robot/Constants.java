@@ -41,11 +41,12 @@ public class Constants {
     public static double DRIVE_REGULAR_POWER = 0.7;
     public static double DRIVE_TURBO_POWER = 0.9;
 
+    // Alignment Constants
     public static float DRIVE_KP = 0.1f;
     public static float DRIVE_KI = 0;
     public static float DRIVE_KD = 0.03f;
     public static double DRIVE_MAX_ROTATION_SPEED = 0.2;
-    public static double DRIVE_ROTATION_TOLERANCE = 5;
+    public static double DRIVE_ROTATION_TOLERANCE = 1;
 
     // Shooter Constants
     public static float SHOOTER_KP = 0.00087f;
