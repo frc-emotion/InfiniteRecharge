@@ -9,8 +9,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.PIDControl;
 import frc.robot.Robot;
 
 /**
@@ -30,9 +30,10 @@ public class Shooter {
     private CANSparkMax sparkA, sparkB; // (L, R)
     private DoubleSolenoid shooterSolenoid; // (closed, open)
     private double startTime; // stores start time of macro call
+    private PIDControl pidControl;
 
     public Shooter() {
-        workShuffleBoard();
+        // workShuffleBoard();
         // Intialize motors
         sparkA = new CANSparkMax(Constants.SHOOTER_PORTS[0], MotorType.kBrushless);
         sparkB = new CANSparkMax(Constants.SHOOTER_PORTS[1], MotorType.kBrushless);
@@ -53,17 +54,19 @@ public class Shooter {
         shooterSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_SHOOTER_PORT[0], Constants.PNEUMATIC_SHOOTER_PORT[1]);
 
         startTime = 0;
+        pidControl = new PIDControl(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD);
+        pidControl.setTolerance(Constants.SHOOTER_THRESHOLD_RPM);
     }
 
     public double getRPM() {
-        return sparkA.getEncoder().getVelocity();
+        return -sparkA.getEncoder().getVelocity();
     }
 
     /**
      * Call periodically in teleopPeriodic
      */
     public void run() {
-        workShuffleBoard();
+        System.out.println(getRPM());
         if (Robot.operatorController.getTriggerAxis(Hand.kRight) >= Constants.TRIGGER_THRESHOLD) {
             shoot();
         } else if (Robot.operatorController.getStartButton()) {
@@ -107,13 +110,10 @@ public class Shooter {
      * Spins motors at constant power
      */
     public void spinUp() {
-        if (getRPM() - Constants.SHOOTER_TARGET_RPM > Constants.SHOOTER_THRESHOLD_RPM) {
-            sparkA.set(Constants.SHOOTER_LOWER_SPEED);
-            sparkB.set(-Constants.SHOOTER_LOWER_SPEED);
-        } else {
-            sparkA.set(Constants.SHOOTER_UPPER_SPEED);
-            sparkB.set(-Constants.SHOOTER_UPPER_SPEED);
-        }
+        double value = pidControl.getValue(Constants.SHOOTER_TARGET_RPM, getRPM());
+        sparkA.set(value);
+        sparkB.set(-value);
+    
     }
 
     /**
@@ -154,11 +154,7 @@ public class Shooter {
     public void stop() {
         close();
         spinDown();
+        pidControl.cleanup();
         startTime = 0; // Resets macros timing
-    }
-
-
-    public void workShuffleBoard() {
-        SmartDashboard.putNumber("Shooter Speed", getRPM());
     }
 }

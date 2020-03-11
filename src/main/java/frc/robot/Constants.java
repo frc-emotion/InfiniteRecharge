@@ -41,15 +41,16 @@ public class Constants {
     public static double DRIVE_REGULAR_POWER = 0.7;
     public static double DRIVE_TURBO_POWER = 0.9;
 
-    public static float DRIVE_KP = 0.08f;
+    public static float DRIVE_KP = 0.1f;
     public static float DRIVE_KI = 0;
-    public static float DRIVE_KD = 0.04f;
+    public static float DRIVE_KD = 0.03f;
     public static double DRIVE_MAX_ROTATION_SPEED = 0.2;
     public static double DRIVE_ROTATION_TOLERANCE = 5;
 
     // Shooter Constants
-    public static double SHOOTER_LOWER_SPEED = 0.8;
-    public static double SHOOTER_UPPER_SPEED = 1;
+    public static float SHOOTER_KP = 0.8f;
+    public static float SHOOTER_KI = 0;
+    public static float SHOOTER_KD = 0.3f;
     public static double SHOOTER_TARGET_RPM = 5150;
     public static double SHOOTER_THRESHOLD_RPM = 50;
 
