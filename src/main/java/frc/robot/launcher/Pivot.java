@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.PIDControl;
 import frc.robot.Robot;
@@ -113,7 +112,7 @@ public class Pivot {
     }
 
     public void setLine() {
-        setRevolution(23.78);
+        setRevolution(18.5);
     }
 
     public void setWheel() {
@@ -121,7 +120,7 @@ public class Pivot {
     }
 
     public void setTrench() {
-        setRevolution(13.7);
+        setRevolution(14);
     }
 
     public void setBottom() {
@@ -153,14 +152,33 @@ public class Pivot {
     }
 
     public void setRevolution(double rev) {
-        double speed = -pidControl.getValue(rev, getRevolution());
+        double speed = Constants.PIVOT_AUTO_SPEED;
+        int sign = -1;
+        if (rev < getRevolution()) {
+            sign *= -1;
+            speed -= 0.05;
+        }
 
         // Prevent pivot to go below the lowerLimit switch
-        if (!lowerLimit.get() && speed > 0) {
+        if (!lowerLimit.get() && sign > 0 || getRevolution() > Constants.PIVOT_MAX_REVOLUTION) {
             stop();
             return;
         }
 
-        sparkA.set(speed);
+        if (Math.abs(getRevolution() - rev) < Constants.PIVOT_THRESHOLD) {
+            stop();
+            return;
+        }
+        sparkA.set(sign * speed);
+
+        /**
+         * double speed = -pidControl.getValue(rev, getRevolution());
+         * 
+         * // Prevent pivot to go below the lowerLimit switch if (!lowerLimit.get() &&
+         * speed > 0) { stop(); return; } if (getRevolution() >
+         * Constants.PIVOT_MAX_REVOLUTION) { stop(); return; }
+         * 
+         * sparkA.set(speed);
+         */
     }
 }

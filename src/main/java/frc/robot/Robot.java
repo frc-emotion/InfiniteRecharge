@@ -214,6 +214,7 @@ public class Robot extends TimedRobot {
     pivot.run();
     shooter.run();
     intake.run();
+    System.out.println(pivot.getRevolution() + "," + shooter.getRPM());
   }
 
   /**

@@ -3,6 +3,7 @@ package frc.robot.launcher;
 import java.util.ArrayList;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -10,7 +11,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.robot.Constants;
-import frc.robot.PIDControl;
 import frc.robot.Robot;
 
 /**
@@ -30,7 +30,6 @@ public class Shooter {
     private CANSparkMax sparkA, sparkB; // (L, R)
     private DoubleSolenoid shooterSolenoid; // (closed, open)
     private double startTime; // stores start time of macro call
-    private PIDControl pidControl;
 
     public Shooter() {
         // workShuffleBoard();
@@ -54,19 +53,20 @@ public class Shooter {
         shooterSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_SHOOTER_PORT[0], Constants.PNEUMATIC_SHOOTER_PORT[1]);
 
         startTime = 0;
-        pidControl = new PIDControl(Constants.SHOOTER_KP, Constants.SHOOTER_KI, Constants.SHOOTER_KD);
-        pidControl.setTolerance(Constants.SHOOTER_THRESHOLD_RPM);
+        sparkA.getPIDController().setP(Constants.SHOOTER_KP);
+        sparkA.getPIDController().setI(Constants.SHOOTER_KI);
+        sparkA.getPIDController().setD(Constants.SHOOTER_KD);
+        sparkA.getPIDController().setFF(Constants.SHOOTER_KF);
     }
 
     public double getRPM() {
-        return -sparkA.getEncoder().getVelocity();
+        return sparkA.getEncoder().getVelocity();
     }
 
     /**
      * Call periodically in teleopPeriodic
      */
     public void run() {
-        System.out.println(getRPM());
         if (Robot.operatorController.getTriggerAxis(Hand.kRight) >= Constants.TRIGGER_THRESHOLD) {
             shoot();
         } else if (Robot.operatorController.getStartButton()) {
@@ -110,16 +110,17 @@ public class Shooter {
      * Spins motors at constant power
      */
     public void spinUp() {
-        double value = pidControl.getValue(Constants.SHOOTER_TARGET_RPM, getRPM());
-        sparkA.set(value);
-        sparkB.set(-value);
-    
+        //System.out.println(sparkA.getAppliedOutput());
+        sparkA.getPIDController().setReference(Constants.SHOOTER_TARGET_RPM, ControlType.kVelocity);
+        sparkB.set(-sparkA.getAppliedOutput());
+
     }
 
     /**
      * Stop motors
      */
     public void spinDown() {
+        sparkA.getPIDController().setReference(0, ControlType.kDutyCycle);
         sparkA.set(0);
         sparkB.set(0);
     }
@@ -154,7 +155,6 @@ public class Shooter {
     public void stop() {
         close();
         spinDown();
-        pidControl.cleanup();
         startTime = 0; // Resets macros timing
     }
 }
