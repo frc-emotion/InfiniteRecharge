@@ -58,7 +58,7 @@ public class Constants {
 
     public static double SHOOTER_TURN_SPEED = 0.2;
 
-    public static double SHOOTER_SHOOT_TIME = 700;
+    public static double SHOOTER_SHOOT_TIME = 900;
     public static double SHOOTER_ROTATE_TIME = 2000;
 
     public static double SHOOTER_MAX_VELOCITY = 10; // Meters/second

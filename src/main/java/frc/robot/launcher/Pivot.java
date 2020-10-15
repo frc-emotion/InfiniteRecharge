@@ -128,7 +128,7 @@ public class Pivot {
     }
 
     public void setAgainst() {
-        setRevolution(79);
+        setRevolution(78);
     }
 
     public void setLine() {
@@ -140,7 +140,7 @@ public class Pivot {
     }
 
     public void setTrench() {
-        setRevolution(14);
+        setRevolution(14.25);
     }
 
     public void setBottom() {
