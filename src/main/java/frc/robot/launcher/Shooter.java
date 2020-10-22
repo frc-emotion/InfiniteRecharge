@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Class that handles the shooting mechanism
@@ -32,6 +33,7 @@ public class Shooter {
     private double startTime; // stores start time of macro call
 
     public Shooter() {
+        initShuffleBoard();
         // workShuffleBoard();
         // Intialize motors
         sparkA = new CANSparkMax(Constants.SHOOTER_PORTS[0], MotorType.kBrushless);
@@ -67,6 +69,7 @@ public class Shooter {
      * Call periodically in teleopPeriodic
      */
     public void run() {
+        workShuffleBoard();
         if (Robot.operatorController.getTriggerAxis(Hand.kRight) >= Constants.TRIGGER_THRESHOLD) {
             shoot();
         } else if (Robot.operatorController.getStartButton()) {
@@ -156,5 +159,13 @@ public class Shooter {
         close();
         spinDown();
         startTime = 0; // Resets macros timing
+    }
+
+    public void initShuffleBoard() {
+        SmartDashboard.putNumber("Shooter RPM", getRPM());
+    }
+
+    public void workShuffleBoard(){
+        SmartDashboard.putNumber("Shooter RPM", getRPM());
     }
 }

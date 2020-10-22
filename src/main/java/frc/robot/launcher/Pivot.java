@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.robot.Constants;
 import frc.robot.PIDControl;
 import frc.robot.Robot;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  * Class that handles the pivot/screw mechanism that rotates the launcher
  * mechanism
@@ -19,6 +19,7 @@ import frc.robot.Robot;
  * @author Ryan Chaiyakul
  */
 public class Pivot {
+    
     private CANSparkMax sparkA; // Spark to control pivot location with screw mechanism
     private Alignment alignment; // Alignment object
     private DigitalInput lowerLimit; // lowerLimit is active low
@@ -34,6 +35,7 @@ public class Pivot {
         pidControl.setMaxSpeed(Constants.PIVOT_AUTO_SPEED);
 
         sparkA.getEncoder().setPosition(0);
+        initShuffleBoard();
     }
 
     /**
@@ -60,6 +62,7 @@ public class Pivot {
     }
 
     public void run() {
+        workShuffleBoard();
         if (Math.abs(Robot.operatorController.getY(Hand.kLeft)) > Constants.TRIGGER_THRESHOLD) {
             teleopRun();
         } else if (Robot.operatorController.getBButton()) {
@@ -204,4 +207,13 @@ public class Pivot {
          * sparkA.set(speed);
          */
     }
+
+    public void initShuffleBoard() {
+        SmartDashboard.putNumber("Pivot Position", getRevolution());
+    }
+
+    public void workShuffleBoard(){
+        SmartDashboard.putNumber("Pivot Position", getRevolution());
+    }
+    
 }
