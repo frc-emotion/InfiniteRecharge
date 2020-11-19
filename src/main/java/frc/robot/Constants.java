@@ -53,6 +53,11 @@ public class Constants {
     public static double SHOOTER_TARGET_RPM = 4950;
     public static double SHOOTER_THRESHOLD_RPM = 50;
 
+    public static double SHOOTER_KP = 0;
+    public static double SHOOTER_KI = 0;
+    public static double SHOOTER_KD = 0;
+    public static double SHOOTER_KF = 0;
+
     public static double SHOOTER_TURN_SPEED = 0.2;
 
     public static double SHOOTER_SHOOT_TIME = 700;
