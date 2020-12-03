@@ -47,7 +47,6 @@ public class Pivot {
     }
 
     public void run() {
-        System.out.println(getRevolution());
         if (Math.abs(Robot.operatorController.getY(Hand.kLeft)) > Constants.TRIGGER_THRESHOLD) {
             teleopRun();
         } else if (Robot.operatorController.getBButton()) {

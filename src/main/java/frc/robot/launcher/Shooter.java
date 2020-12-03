@@ -3,12 +3,14 @@ package frc.robot.launcher;
 import java.util.ArrayList;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
@@ -51,6 +53,12 @@ public class Shooter {
         shooterSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_SHOOTER_PORT[0], Constants.PNEUMATIC_SHOOTER_PORT[1]);
 
         startTime = 0;
+
+        sparkA.getPIDController().setP(Constants.SHOOTER_KP);
+        sparkA.getPIDController().setI(Constants.SHOOTER_KI);
+        sparkA.getPIDController().setD(Constants.SHOOTER_KD);
+        sparkA.getPIDController().setFF(Constants.SHOOTER_KF);
+        sparkB.follow(sparkA, true);
     }
 
     public double getRPM() {
@@ -70,6 +78,8 @@ public class Shooter {
         } else {
             stop();
         }
+
+        SmartDashboard.putNumber("ShooterRPM", getRPM());
     }
 
     /**
@@ -104,13 +114,16 @@ public class Shooter {
      * Spins motors at constant power
      */
     public void spinUp() {
-        if (getRPM() - Constants.SHOOTER_TARGET_RPM > Constants.SHOOTER_THRESHOLD_RPM) {
+        /**
+         * if (getRPM() - Constants.SHOOTER_TARGET_RPM > Constants.SHOOTER_THRESHOLD_RPM) {
             sparkA.set(Constants.SHOOTER_LOWER_SPEED);
             sparkB.set(-Constants.SHOOTER_LOWER_SPEED);
         } else {
             sparkA.set(Constants.SHOOTER_UPPER_SPEED);
             sparkB.set(-Constants.SHOOTER_UPPER_SPEED);
         }
+         */
+        sparkA.getPIDController().setReference(Constants.SHOOTER_TARGET_RPM, ControlType.kVelocity);
     }
 
     /**
@@ -118,7 +131,6 @@ public class Shooter {
      */
     public void spinDown() {
         sparkA.set(0);
-        sparkB.set(0);
     }
 
     /**
@@ -126,7 +138,6 @@ public class Shooter {
      */
     public void turn() {
         sparkA.set(Constants.SHOOTER_TURN_SPEED);
-        sparkB.set(Constants.SHOOTER_TURN_SPEED);
     }
 
     /**
