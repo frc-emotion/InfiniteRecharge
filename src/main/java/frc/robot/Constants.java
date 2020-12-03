@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Constants {
     // USB Ports
     public static int DRIVER_PORT = 0;
@@ -50,13 +52,18 @@ public class Constants {
     // Shooter Constants
     public static double SHOOTER_LOWER_SPEED = 0.7;
     public static double SHOOTER_UPPER_SPEED = 0.9;
-    public static double SHOOTER_TARGET_RPM = 4950;
-    public static double SHOOTER_THRESHOLD_RPM = 50;
+    public static double SHOOTER_TARGET_RPM = 4500;
+    public static double SHOOTER_THRESHOLD_RPM = 100;
 
     public static double SHOOTER_TURN_SPEED = 0.2;
 
     public static double SHOOTER_SHOOT_TIME = 700;
     public static double SHOOTER_ROTATE_TIME = 2000;
+
+    public static double SHOOTER_KP = 0.3;
+    public static double SHOOTER_KI = 0;
+    public static double SHOOTER_KD = 3.5;
+    public static double SHOOTER_KF = 0.5;
 
     public static double SHOOTER_MAX_VELOCITY = 10; // Meters/second
 
