@@ -33,6 +33,7 @@ public class Shooter {
     private double startTime; // stores start time of macro call
 
     public Shooter() {
+        initShuffleBoard();
         // Intialize motors
         sparkA = new CANSparkMax(Constants.SHOOTER_PORTS[0], MotorType.kBrushless);
         sparkB = new CANSparkMax(Constants.SHOOTER_PORTS[1], MotorType.kBrushless);
@@ -79,16 +80,26 @@ public class Shooter {
             stop();
         }
 
-        SmartDashboard.putNumber("ShooterRPM", getRPM());
+        workShuffleBoard();
     }
 
     /**
      * Handles both motors and pnuematic timing
+     * 
      */
+
+    public void initShuffleBoard() {
+        SmartDashboard.putNumber("ShooterRPM", 0);
+    }
+
+    public void workShuffleBoard() {
+        SmartDashboard.putNumber("ShooterRPM", getRPM());
+    }
     public void shoot() {
         if (startTime == 0) {
             startTime = System.currentTimeMillis();
         }
+
         spinUp();
 
         if (System.currentTimeMillis() - startTime > Constants.SHOOTER_SHOOT_TIME) {

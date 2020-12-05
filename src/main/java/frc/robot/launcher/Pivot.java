@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
@@ -26,6 +27,15 @@ public class Pivot {
         sparkA = new CANSparkMax(Constants.PIVOT_PORT, MotorType.kBrushless);
         lowerLimit = new DigitalInput(Constants.PIVOT_LIMIT_PORT);
         alignment = new Alignment();
+        initShuffleBoard();
+    }
+
+    public void initShuffleBoard(){
+        SmartDashboard.putNumber("Pivot Rev", 0);
+    }
+
+    public void workShuffleBoard(){
+        SmartDashboard.putNumber("Pivot Rev", getRevolution());
     }
 
     public void callibrate() {
@@ -47,6 +57,7 @@ public class Pivot {
     }
 
     public void run() {
+        workShuffleBoard();
         if (Math.abs(Robot.operatorController.getY(Hand.kLeft)) > Constants.TRIGGER_THRESHOLD) {
             teleopRun();
         } else if (Robot.operatorController.getBButton()) {
@@ -110,7 +121,7 @@ public class Pivot {
     }
 
     public void setLine() {
-        setRevolution(19.5);
+        setRevolution(16.35);
     }
 
     public void setWheel() {
@@ -118,7 +129,7 @@ public class Pivot {
     }
 
     public void setTrench() {
-        setRevolution(13.7);
+        setRevolution(3.8);
     }
 
     public boolean atAlign() {
